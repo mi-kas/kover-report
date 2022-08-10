@@ -19,7 +19,6 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 ### Outputs
 
 - `coverage-overall` - The overall coverage of the project
-- `coverage-changed-files` - The total coverage of all changed files
 
 ### Example Workflow
 
@@ -33,17 +32,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          java-version: 1.8
-      - name: Run Coverage
-        run: |
-          chmod +x gradlew
-          ./gradlew testCoverage
+          distribution: temurin
+          java-version: 11
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Generate kover coverage report
+        run: ./gradlew koverXmlReport
 
-      - name: Add coverage to PR
+      - name: Add coverage report to PR
         id: kover
         uses: mi-kas/kover-report@v0.0.1
         with:

@@ -11,10 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          yarn install --frozen-lockfile
-      - run: |
-          yarn all
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Run all
+        run: yarn all
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps:
