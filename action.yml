@@ -1,11 +1,16 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Kotlinx Kover Report'
+description: 'Github action that publishes the Kover code coverage report as a comment in pull requests'
+
 inputs:
   milliseconds: # change this
     required: true
     description: 'input description here'
     default: 'default value if applicable'
+
 runs:
   using: 'node16'
   main: 'dist/index.js'
+
+branding:
+  icon: 'percent'
+  color: 'green'
