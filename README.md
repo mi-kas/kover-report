@@ -12,13 +12,16 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 
 ### Inputs
 
-- `path` - [**required**] Paths of the generated kover report xml file
+- `path` - [**required**] Path to the generated kover report xml file
 - `token` - [**required**] Github personal token to add commits to the pull request
 - `title` - [*optional*] Title for the pull request comment
+- `min-coverage-overall` - [*optional*] The minimum code coverage that is required to pass for overall project
+- `min-coverage-changed-files` - [*optional*] The minimum code coverage that is required to pass for changed files
 
 ### Outputs
 
 - `coverage-overall` - The overall coverage of the project
+- `coverage-changed-files` - The total coverage of all changed files
 
 ### Example Workflow
 
@@ -45,10 +48,13 @@ jobs:
 
       - name: Add coverage report to PR
         id: kover
-        uses: mi-kas/kover-report@v0.0.1
+        uses: mi-kas/kover-report@v0.1
         with:
           paths: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
+          title: Code Coverage
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
 ```
 
 <br>

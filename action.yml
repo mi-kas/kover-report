@@ -2,10 +2,27 @@ name: 'Kotlinx Kover Report'
 description: 'Github action that publishes the Kover code coverage report as a comment in pull requests'
 
 inputs:
-  milliseconds: # change this
+  path:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'Path to the generated kover report xml file'
+  token:
+    required: true
+    description: 'Github personal token to add commits to the pull request'
+  title:
+    required: false
+    description: 'Title for the pull request comment'
+  min-coverage-overall:
+    required: false
+    description: 'The minimum code coverage that is required to pass for overall project'
+  min-coverage-changed-files:
+    required: false
+    description: 'The minimum code coverage that is required to pass for changed files'
+
+outputs:
+  coverage-overall:
+    description: 'The overall coverage of the project'
+  coverage-changed-files:
+    description: 'The total coverage of all changed files'
 
 runs:
   using: 'node16'
@@ -13,4 +30,4 @@ runs:
 
 branding:
   icon: 'percent'
-  color: 'green'
+  color: 'blue'
