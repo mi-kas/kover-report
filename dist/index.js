@@ -44,7 +44,6 @@ const github = __importStar(__nccwpck_require__(5438));
 const render_1 = __nccwpck_require__(9089);
 const reader_1 = __nccwpck_require__(7433);
 const run = (core) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const path = core.getInput('path', { required: true });
     const token = core.getInput('token', { required: true });
     const title = core.getInput('title', { required: false });
@@ -59,19 +58,30 @@ const run = (core) => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
-    const prNumber = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
-    if (prNumber === undefined) {
-        throw Error(`Only pull requests and pushes are supported, ${github.context.eventName} not supported.`);
-    }
+    const prNumber = getPrNumber(event, github.context);
     const coverage = yield (0, reader_1.getReportCoverage)(path);
-    if (coverage === null) {
-        throw Error('No project coverage detected.');
+    if (!coverage) {
+        throw Error('No project coverage detected');
     }
     const comment = (0, render_1.createComment)(coverage, minCoverageOverall);
     core.setOutput('coverage-overall', coverage.percentage);
-    yield addComment(prNumber, title, comment, octokit);
+    if (prNumber != null) {
+        yield addComment(prNumber, title, comment, octokit);
+    }
 });
 exports.run = run;
+const getPrNumber = (event, context) => {
+    var _a, _b;
+    switch (event) {
+        case 'pull_request':
+        case 'pull_request_target':
+            return (_b = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) !== null && _b !== void 0 ? _b : null;
+        case 'push':
+            return null;
+        default:
+            throw Error(`Only pull requests and pushes are supported, ${context.eventName} not supported.`);
+    }
+};
 const addComment = (prNumber, title, body, client) => __awaiter(void 0, void 0, void 0, function* () {
     let commentUpdated = false;
     if (title) {
