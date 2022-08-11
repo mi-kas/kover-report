@@ -22,19 +22,13 @@ export const run = async (core: typeof actionsCore): Promise<void> => {
   const event = github.context.eventName
   core.info(`Event is ${event}`)
 
-  let base
-  let head
   let prNumber
   switch (event) {
     case 'pull_request':
     case 'pull_request_target':
-      base = github.context.payload.pull_request?.base.sha
-      head = github.context.payload.pull_request?.head.sha
       prNumber = github.context.payload.pull_request?.number
       break
     case 'push':
-      base = github.context.payload.before
-      head = github.context.payload.after
       break
     default:
       throw Error(
@@ -42,17 +36,13 @@ export const run = async (core: typeof actionsCore): Promise<void> => {
       )
   }
 
-  core.info(`Base sha: ${base}`)
-  core.info(`Head sha: ${head}`)
-
   const coverage = await getReportCoverage(path)
   if (!coverage) {
     throw Error('No project coverage detected')
   }
   const comment = createComment(coverage, minCoverageOverall)
 
-  core.info(`Coverage: ${JSON.stringify(coverage)}`)
-  core.info(`Comment: ${comment}`)
+  core.setOutput('coverage-overall', coverage.percentage)
 
   if (prNumber != null) {
     await addComment(prNumber, title, comment, octokit)

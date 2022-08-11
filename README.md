@@ -39,7 +39,6 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
           java-version: 11
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2
@@ -58,7 +57,7 @@ jobs:
 ```
 
 <br>
-<img src="/preview/screenshot.png" alt="output screenshot" title="output screenshot" width="500" />
+<img src="/screenshot.png" alt="output screenshot" title="output screenshot" width="500" />
 
 ## License
 

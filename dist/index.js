@@ -44,7 +44,7 @@ const github = __importStar(__nccwpck_require__(5438));
 const render_1 = __nccwpck_require__(9089);
 const reader_1 = __nccwpck_require__(7433);
 const run = (core) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+    var _a;
     const path = core.getInput('path', { required: true });
     const token = core.getInput('token', { required: true });
     const title = core.getInput('title', { required: false });
@@ -59,32 +59,23 @@ const run = (core) => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
-    let base;
-    let head;
     let prNumber;
     switch (event) {
         case 'pull_request':
         case 'pull_request_target':
-            base = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.base.sha;
-            head = (_b = github.context.payload.pull_request) === null || _b === void 0 ? void 0 : _b.head.sha;
-            prNumber = (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.number;
+            prNumber = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
             break;
         case 'push':
-            base = github.context.payload.before;
-            head = github.context.payload.after;
             break;
         default:
             throw Error(`Only pull requests and pushes are supported, ${github.context.eventName} not supported.`);
     }
-    core.info(`Base sha: ${base}`);
-    core.info(`Head sha: ${head}`);
     const coverage = yield (0, reader_1.getReportCoverage)(path);
     if (!coverage) {
         throw Error('No project coverage detected');
     }
     const comment = (0, render_1.createComment)(coverage, minCoverageOverall);
-    core.info(`Coverage: ${JSON.stringify(coverage)}`);
-    core.info(`Comment: ${comment}`);
+    core.setOutput('coverage-overall', coverage.percentage);
     if (prNumber != null) {
         yield addComment(prNumber, title, comment, octokit);
     }
