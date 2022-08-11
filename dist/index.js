@@ -59,26 +59,17 @@ const run = (core) => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
-    let prNumber;
-    switch (event) {
-        case 'pull_request':
-        case 'pull_request_target':
-            prNumber = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
-            break;
-        case 'push':
-            break;
-        default:
-            throw Error(`Only pull requests and pushes are supported, ${github.context.eventName} not supported.`);
+    const prNumber = (_a = github.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number;
+    if (prNumber === undefined) {
+        throw Error(`Only pull requests and pushes are supported, ${github.context.eventName} not supported.`);
     }
     const coverage = yield (0, reader_1.getReportCoverage)(path);
-    if (!coverage) {
-        throw Error('No project coverage detected');
+    if (coverage === null) {
+        throw Error('No project coverage detected.');
     }
     const comment = (0, render_1.createComment)(coverage, minCoverageOverall);
     core.setOutput('coverage-overall', coverage.percentage);
-    if (prNumber != null) {
-        yield addComment(prNumber, title, comment, octokit);
-    }
+    yield addComment(prNumber, title, comment, octokit);
 });
 exports.run = run;
 const addComment = (prNumber, title, body, client) => __awaiter(void 0, void 0, void 0, function* () {
@@ -182,8 +173,16 @@ exports.getReportCoverage = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const parser = __importStar(__nccwpck_require__(6189));
 const getReportCoverage = (path) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     const report = yield parseXmlReport(path);
+    return getCoverage(report);
+});
+exports.getReportCoverage = getReportCoverage;
+const parseXmlReport = (xmlPath) => __awaiter(void 0, void 0, void 0, function* () {
+    const reportXml = yield fs.promises.readFile(xmlPath.trim(), 'utf-8');
+    return parser.parseStringPromise(reportXml);
+});
+const getCoverage = (report) => {
+    var _a;
     const counters = report['report']['counter'];
     const lineCounter = (_a = counters.find(counter => counter['$']['type'] === 'LINE')) === null || _a === void 0 ? void 0 : _a['$'];
     if (!lineCounter)
@@ -195,12 +194,7 @@ const getReportCoverage = (path) => __awaiter(void 0, void 0, void 0, function* 
         covered,
         percentage: parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
     };
-});
-exports.getReportCoverage = getReportCoverage;
-const parseXmlReport = (xmlPath) => __awaiter(void 0, void 0, void 0, function* () {
-    const reportXml = yield fs.promises.readFile(xmlPath.trim(), 'utf-8');
-    return parser.parseStringPromise(reportXml);
-});
+};
 
 
 /***/ }),
