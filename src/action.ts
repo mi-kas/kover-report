@@ -22,31 +22,22 @@ export const run = async (core: typeof actionsCore): Promise<void> => {
   const event = github.context.eventName
   core.info(`Event is ${event}`)
 
-  let prNumber
-  switch (event) {
-    case 'pull_request':
-    case 'pull_request_target':
-      prNumber = github.context.payload.pull_request?.number
-      break
-    case 'push':
-      break
-    default:
-      throw Error(
-        `Only pull requests and pushes are supported, ${github.context.eventName} not supported.`
-      )
+  const prNumber = github.context.payload.pull_request?.number
+  if (prNumber === undefined) {
+    throw Error(
+      `Only pull requests and pushes are supported, ${github.context.eventName} not supported.`
+    )
   }
 
   const coverage = await getReportCoverage(path)
-  if (!coverage) {
-    throw Error('No project coverage detected')
+  if (coverage === null) {
+    throw Error('No project coverage detected.')
   }
   const comment = createComment(coverage, minCoverageOverall)
 
   core.setOutput('coverage-overall', coverage.percentage)
 
-  if (prNumber != null) {
-    await addComment(prNumber, title, comment, octokit)
-  }
+  await addComment(prNumber, title, comment, octokit)
 }
 
 const addComment = async (

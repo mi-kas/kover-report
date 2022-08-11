@@ -57,6 +57,16 @@ export const getReportCoverage = async (
   path: string
 ): Promise<Coverage | null> => {
   const report = await parseXmlReport(path)
+
+  return getCoverage(report)
+}
+
+const parseXmlReport = async (xmlPath: string): Promise<Report> => {
+  const reportXml = await fs.promises.readFile(xmlPath.trim(), 'utf-8')
+  return parser.parseStringPromise(reportXml)
+}
+
+const getCoverage = (report: Report): Coverage | null => {
   const counters = report['report']['counter']
 
   const lineCounter = counters.find(
@@ -72,9 +82,4 @@ export const getReportCoverage = async (
     covered,
     percentage: parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
   }
-}
-
-const parseXmlReport = async (xmlPath: string): Promise<Report> => {
-  const reportXml = await fs.promises.readFile(xmlPath.trim(), 'utf-8')
-  return parser.parseStringPromise(reportXml)
 }
