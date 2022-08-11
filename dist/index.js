@@ -83,7 +83,7 @@ const run = (core) => __awaiter(void 0, void 0, void 0, function* () {
         throw Error('No project coverage detected');
     }
     const comment = (0, render_1.createComment)(coverage, minCoverageOverall);
-    core.info(`Coverage: ${coverage}`);
+    core.info(`Coverage: ${JSON.stringify(coverage)}`);
     core.info(`Comment: ${comment}`);
     if (prNumber != null) {
         yield addComment(prNumber, title, comment, octokit);
