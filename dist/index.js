@@ -50,7 +50,7 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     }
     core.setOutput('coverage-overall', overallCoverage.percentage);
     const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
-    core.info(`Changed files: ${changedFiles}`);
+    core.info(`Changed files: ${JSON.stringify(changedFiles)}`);
     const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles);
     core.setOutput('coverage-changed-files', filesCoverage.percentage);
     const comment = (0, render_1.createComment)(overallCoverage, filesCoverage, minCoverageOverall, minCoverageChangedFiles);
@@ -85,7 +85,6 @@ const addComment = (prNumber, title, body, client, repo) => __awaiter(void 0, vo
     if (title) {
         const comments = yield client.rest.issues.listComments(Object.assign({ issue_number: prNumber }, repo));
         const comment = comments.data.find(c => { var _a, _b; return (_b = (_a = c.body) === null || _a === void 0 ? void 0 : _a.startsWith(title)) !== null && _b !== void 0 ? _b : false; });
-        console.log(comment);
         if (comment) {
             yield client.rest.issues.updateComment(Object.assign({ comment_id: comment.id, body }, repo));
             commentUpdated = true;

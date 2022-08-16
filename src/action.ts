@@ -53,7 +53,7 @@ export const run = async (
     octokit,
     github.context.repo
   )
-  core.info(`Changed files: ${changedFiles}`)
+  core.info(`Changed files: ${JSON.stringify(changedFiles)}`)
   const filesCoverage = getFileCoverage(report, changedFiles)
   core.setOutput('coverage-changed-files', filesCoverage.percentage)
 
@@ -115,7 +115,6 @@ export const addComment = async (
       ...repo
     })
     const comment = comments.data.find(c => c.body?.startsWith(title) ?? false)
-    console.log(comment)
 
     if (comment) {
       await client.rest.issues.updateComment({
