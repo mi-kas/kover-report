@@ -50,6 +50,7 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     }
     core.setOutput('coverage-overall', overallCoverage.percentage);
     const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
+    core.info(`Changed files: ${changedFiles}`);
     const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles);
     core.setOutput('coverage-changed-files', filesCoverage.percentage);
     const comment = (0, render_1.createComment)(overallCoverage, filesCoverage, minCoverageOverall, minCoverageChangedFiles);

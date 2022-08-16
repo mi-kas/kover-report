@@ -53,6 +53,7 @@ export const run = async (
     octokit,
     github.context.repo
   )
+  core.info(`Changed files: ${changedFiles}`)
   const filesCoverage = getFileCoverage(report, changedFiles)
   core.setOutput('coverage-changed-files', filesCoverage.percentage)
 
