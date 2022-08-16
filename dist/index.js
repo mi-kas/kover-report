@@ -58,26 +58,40 @@ const run = (core) => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
-    const prNumber = getPrNumber(event, github.context);
-    const coverage = yield (0, reader_1.getReportCoverage)(path);
-    if (!coverage) {
+    const details = getDetails(event, github.context);
+    const report = yield (0, reader_1.parseReport)(path);
+    if (!report) {
+        throw Error('No kover report detected');
+    }
+    const overallCoverage = (0, reader_1.getOverallCoverage)(report);
+    if (!overallCoverage) {
         throw Error('No project coverage detected');
     }
-    const comment = (0, render_1.createComment)(coverage, minCoverageOverall);
-    core.setOutput('coverage-overall', coverage.percentage);
-    if (prNumber != null) {
-        yield addComment(prNumber, title, comment, octokit);
+    core.setOutput('coverage-overall', overallCoverage.percentage);
+    const changedFiles = yield getChangedFiles(details.base, details.head, octokit);
+    const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles);
+    const comment = (0, render_1.createComment)(overallCoverage, minCoverageOverall);
+    if (details.prNumber != null) {
+        yield addComment(details.prNumber, title, comment, octokit);
     }
 });
 exports.run = run;
-const getPrNumber = (event, context) => {
-    var _a, _b;
+const getDetails = (event, context) => {
+    var _a, _b, _c, _d;
     switch (event) {
         case 'pull_request':
         case 'pull_request_target':
-            return (_b = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) !== null && _b !== void 0 ? _b : null;
+            return {
+                prNumber: (_b = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) !== null && _b !== void 0 ? _b : null,
+                base: (_c = github.context.payload.pull_request) === null || _c === void 0 ? void 0 : _c.base.sha,
+                head: (_d = github.context.payload.pull_request) === null || _d === void 0 ? void 0 : _d.head.sha
+            };
         case 'push':
-            return null;
+            return {
+                prNumber: null,
+                base: github.context.payload.before,
+                head: github.context.payload.after
+            };
         default:
             throw Error(`Only pull requests and pushes are supported, ${context.eventName} not supported.`);
     }
@@ -95,6 +109,19 @@ const addComment = (prNumber, title, body, client) => __awaiter(void 0, void 0, 
     if (!commentUpdated) {
         yield client.rest.issues.createComment(Object.assign({ issue_number: prNumber, body }, github.context.repo));
     }
+});
+const getChangedFiles = (base, head, client) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const response = yield client.rest.repos.compareCommits({
+        base,
+        head,
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo
+    });
+    return ((_b = (_a = response.data.files) === null || _a === void 0 ? void 0 : _a.map(file => ({
+        filePath: file.filename,
+        url: file.blob_url
+    }))) !== null && _b !== void 0 ? _b : []);
 });
 
 
@@ -179,31 +206,63 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getReportCoverage = void 0;
+exports.getFileCoverage = exports.getOverallCoverage = exports.parseReport = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const parser = __importStar(__nccwpck_require__(6189));
-const getReportCoverage = (path) => __awaiter(void 0, void 0, void 0, function* () {
+const parseReport = (path) => __awaiter(void 0, void 0, void 0, function* () {
     const report = yield parseXmlReport(path);
-    return getCoverage(report);
+    return report;
 });
-exports.getReportCoverage = getReportCoverage;
+exports.parseReport = parseReport;
 const parseXmlReport = (xmlPath) => __awaiter(void 0, void 0, void 0, function* () {
     const reportXml = yield fs.promises.readFile(xmlPath.trim(), 'utf-8');
     return parser.parseStringPromise(reportXml);
 });
-const getCoverage = (report) => {
+const getCoverageFromCounters = (counters) => {
     var _a;
-    const counters = report['report']['counter'];
-    const lineCounter = (_a = counters.find(counter => counter['$']['type'] === 'LINE')) === null || _a === void 0 ? void 0 : _a['$'];
+    const lineCounter = (_a = counters.find(counter => counter['$'].type === 'LINE')) === null || _a === void 0 ? void 0 : _a['$'];
     if (!lineCounter)
         return null;
-    const missed = parseFloat(lineCounter['missed']);
-    const covered = parseFloat(lineCounter['covered']);
+    const missed = parseFloat(lineCounter.missed);
+    const covered = parseFloat(lineCounter.covered);
     return {
         missed,
         covered,
         percentage: parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
     };
+};
+const getOverallCoverage = (report) => {
+    return getCoverageFromCounters(report.report.counter);
+};
+exports.getOverallCoverage = getOverallCoverage;
+const getFileCoverage = (report, files) => {
+    const filesWithCoverage = files.reduce((acc, file) => {
+        report.report.package.map(item => {
+            const packageName = item['$'].name;
+            const sourceFile = item.sourcefile.find(sf => {
+                const sourceFileName = sf['$'].name;
+                return file.filePath.endsWith(`${packageName}/${sourceFileName}`);
+            });
+            if (sourceFile) {
+                const coverage = getCoverageFromCounters(sourceFile.counter);
+                if (coverage)
+                    acc.push(Object.assign(Object.assign({}, file), coverage));
+            }
+        });
+        return acc;
+    }, []);
+    return {
+        files: filesWithCoverage,
+        percentage: filesWithCoverage.length > 0 ? getTotalPercentage(filesWithCoverage) : 100
+    };
+};
+exports.getFileCoverage = getFileCoverage;
+const getTotalPercentage = (files) => {
+    const result = files.reduce((acc, file) => ({
+        missed: acc.missed + file.missed,
+        covered: acc.covered + file.covered
+    }), { missed: 0, covered: 0 });
+    return parseFloat(((result.covered / (result.covered + result.missed)) * 100).toFixed(2));
 };
 
 

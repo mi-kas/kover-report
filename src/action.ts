@@ -1,7 +1,7 @@
 import * as actionsCore from '@actions/core'
 import * as github from '@actions/github'
 import {createComment} from './render'
-import {getReportCoverage} from './reader'
+import {parseReport, getOverallCoverage, getFileCoverage} from './reader'
 
 export const run = async (core: typeof actionsCore): Promise<void> => {
   const path = core.getInput('path', {required: true})
@@ -22,31 +22,51 @@ export const run = async (core: typeof actionsCore): Promise<void> => {
   const event = github.context.eventName
   core.info(`Event is ${event}`)
 
-  const prNumber = getPrNumber(event, github.context)
+  const details = getDetails(event, github.context)
 
-  const coverage = await getReportCoverage(path)
-  if (!coverage) {
+  const report = await parseReport(path)
+  if (!report) {
+    throw Error('No kover report detected')
+  }
+
+  const overallCoverage = getOverallCoverage(report)
+  if (!overallCoverage) {
     throw Error('No project coverage detected')
   }
-  const comment = createComment(coverage, minCoverageOverall)
+  core.setOutput('coverage-overall', overallCoverage.percentage)
 
-  core.setOutput('coverage-overall', coverage.percentage)
+  const changedFiles = await getChangedFiles(
+    details.base,
+    details.head,
+    octokit
+  )
+  const filesCoverage = getFileCoverage(report, changedFiles)
 
-  if (prNumber != null) {
-    await addComment(prNumber, title, comment, octokit)
+  const comment = createComment(overallCoverage, minCoverageOverall)
+
+  if (details.prNumber != null) {
+    await addComment(details.prNumber, title, comment, octokit)
   }
 }
 
-const getPrNumber = (
+const getDetails = (
   event: string,
   context: typeof github.context
-): number | null => {
+): {prNumber: number | null; base: string; head: string} => {
   switch (event) {
     case 'pull_request':
     case 'pull_request_target':
-      return context.payload.pull_request?.number ?? null
+      return {
+        prNumber: context.payload.pull_request?.number ?? null,
+        base: github.context.payload.pull_request?.base.sha,
+        head: github.context.payload.pull_request?.head.sha
+      }
     case 'push':
-      return null
+      return {
+        prNumber: null,
+        base: github.context.payload.before,
+        head: github.context.payload.after
+      }
     default:
       throw Error(
         `Only pull requests and pushes are supported, ${context.eventName} not supported.`
@@ -86,4 +106,29 @@ const addComment = async (
       ...github.context.repo
     })
   }
+}
+
+export type ChangedFile = {
+  filePath: string
+  url: string
+}
+
+const getChangedFiles = async (
+  base: string,
+  head: string,
+  client: ReturnType<typeof github.getOctokit>
+): Promise<ChangedFile[]> => {
+  const response = await client.rest.repos.compareCommits({
+    base,
+    head,
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo
+  })
+
+  return (
+    response.data.files?.map(file => ({
+      filePath: file.filename,
+      url: file.blob_url
+    })) ?? []
+  )
 }
