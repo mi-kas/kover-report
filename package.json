@@ -12,7 +12,7 @@
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
     "all": "yarn run format && yarn run lint && yarn test && yarn build && yarn run package",
-    "dev": "ts-node-dev --respawn --transpile-only src/reader.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/dev.ts",
     "prepare": "husky install"
   },
   "repository": {

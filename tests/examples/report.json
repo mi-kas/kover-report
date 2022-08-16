@@ -1,0 +1,319 @@
+{
+  "report": {
+    "$": {"name": "Intellij Coverage Report"},
+    "package": [
+      {
+        "$": {"name": "com/github/mi-kas/parceldeliverydetails/domain"},
+        "class": [
+          {
+            "$": {
+              "name": "com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails",
+              "sourcefilename": "ParcelDeliveryDetails.kt"
+            },
+            "method": [
+              {
+                "$": {"name": "<init>", "desc": "(JLjava/time/Instant;)V"},
+                "counter": [
+                  {
+                    "$": {"type": "INSTRUCTION", "missed": "0", "covered": "12"}
+                  },
+                  {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+                  {"$": {"type": "LINE", "missed": "0", "covered": "3"}}
+                ]
+              }
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "0", "covered": "12"}},
+              {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+              {"$": {"type": "LINE", "missed": "0", "covered": "3"}},
+              {"$": {"type": "METHOD", "missed": "0", "covered": "1"}}
+            ]
+          },
+          {
+            "$": {
+              "name": "com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails$Available",
+              "sourcefilename": "ParcelDeliveryDetails.kt"
+            },
+            "method": [
+              {
+                "$": {
+                  "name": "<init>",
+                  "desc": "(Ljava/lang/String;Ljava/lang/String;JLjava/time/Instant;)V"
+                },
+                "counter": [
+                  {
+                    "$": {"type": "INSTRUCTION", "missed": "0", "covered": "24"}
+                  },
+                  {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+                  {"$": {"type": "LINE", "missed": "0", "covered": "5"}}
+                ]
+              }
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "0", "covered": "24"}},
+              {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+              {"$": {"type": "LINE", "missed": "0", "covered": "5"}},
+              {"$": {"type": "METHOD", "missed": "0", "covered": "1"}}
+            ]
+          },
+          {
+            "$": {
+              "name": "com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails$Available$Neighbor",
+              "sourcefilename": "ParcelDeliveryDetails.kt"
+            },
+            "method": [
+              {
+                "$": {
+                  "name": "<init>",
+                  "desc": "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/time/Instant;)V"
+                },
+                "counter": [
+                  {
+                    "$": {"type": "INSTRUCTION", "missed": "0", "covered": "32"}
+                  },
+                  {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+                  {"$": {"type": "LINE", "missed": "0", "covered": "6"}}
+                ]
+              }
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "0", "covered": "32"}},
+              {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+              {"$": {"type": "LINE", "missed": "0", "covered": "6"}},
+              {"$": {"type": "METHOD", "missed": "0", "covered": "1"}}
+            ]
+          },
+          {
+            "$": {
+              "name": "com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails$Available$ParcelShop",
+              "sourcefilename": "ParcelDeliveryDetails.kt"
+            },
+            "method": [
+              {
+                "$": {
+                  "name": "<init>",
+                  "desc": "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/github/mi-kas/parcel/domain/Address;JLjava/time/Instant;)V"
+                },
+                "counter": [
+                  {
+                    "$": {"type": "INSTRUCTION", "missed": "0", "covered": "37"}
+                  },
+                  {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+                  {"$": {"type": "LINE", "missed": "0", "covered": "7"}}
+                ]
+              }
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "0", "covered": "37"}},
+              {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+              {"$": {"type": "LINE", "missed": "0", "covered": "7"}},
+              {"$": {"type": "METHOD", "missed": "0", "covered": "1"}}
+            ]
+          },
+          {
+            "$": {
+              "name": "com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails$Unavailable",
+              "sourcefilename": "ParcelDeliveryDetails.kt"
+            },
+            "method": [
+              {
+                "$": {"name": "<init>", "desc": "(JLjava/time/Instant;)V"},
+                "counter": [
+                  {
+                    "$": {"type": "INSTRUCTION", "missed": "0", "covered": "14"}
+                  },
+                  {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+                  {"$": {"type": "LINE", "missed": "0", "covered": "3"}}
+                ]
+              }
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "0", "covered": "14"}},
+              {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+              {"$": {"type": "LINE", "missed": "0", "covered": "3"}},
+              {"$": {"type": "METHOD", "missed": "0", "covered": "1"}}
+            ]
+          },
+          {
+            "$": {
+              "name": "com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetailsKt",
+              "sourcefilename": "ParcelDeliveryDetails.kt"
+            },
+            "method": [
+              {
+                "$": {
+                  "name": "toDto",
+                  "desc": "(Lcom/github/mi-kas/parceldeliverydetails/db/ParcelDeliveryDetailsEntity;)Lcom/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails;"
+                },
+                "counter": [
+                  {
+                    "$": {
+                      "type": "INSTRUCTION",
+                      "missed": "64",
+                      "covered": "44"
+                    }
+                  },
+                  {"$": {"type": "BRANCH", "missed": "9", "covered": "3"}},
+                  {"$": {"type": "LINE", "missed": "21", "covered": "8"}}
+                ]
+              }
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "64", "covered": "44"}},
+              {"$": {"type": "BRANCH", "missed": "9", "covered": "3"}},
+              {"$": {"type": "LINE", "missed": "21", "covered": "8"}},
+              {"$": {"type": "METHOD", "missed": "0", "covered": "1"}}
+            ]
+          },
+          {
+            "$": {
+              "name": "com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetailsService",
+              "sourcefilename": "ParcelDeliveryDetailsService.kt"
+            },
+            "method": [
+              {
+                "$": {
+                  "name": "<init>",
+                  "desc": "(Lcom/github/mi-kas/parceldeliverydetails/db/ParcelDeliveryDetailsRepository;)V"
+                },
+                "counter": [
+                  {"$": {"type": "INSTRUCTION", "missed": "0", "covered": "5"}},
+                  {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+                  {"$": {"type": "LINE", "missed": "0", "covered": "2"}}
+                ]
+              },
+              {
+                "$": {
+                  "name": "persist$suspendImpl",
+                  "desc": "(Lcom/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetailsService;Lcom/github/mi-kas/parceldeliverydetails/db/ParcelDeliveryDetailsEntity;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;"
+                },
+                "counter": [
+                  {
+                    "$": {"type": "INSTRUCTION", "missed": "10", "covered": "0"}
+                  },
+                  {"$": {"type": "BRANCH", "missed": "0", "covered": "0"}},
+                  {"$": {"type": "LINE", "missed": "1", "covered": "0"}}
+                ]
+              },
+              {
+                "$": {
+                  "name": "findParcelDeliveryDetails$suspendImpl",
+                  "desc": "(Lcom/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetailsService;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;"
+                },
+                "counter": [
+                  {
+                    "$": {"type": "INSTRUCTION", "missed": "23", "covered": "0"}
+                  },
+                  {"$": {"type": "BRANCH", "missed": "2", "covered": "0"}},
+                  {"$": {"type": "LINE", "missed": "4", "covered": "0"}}
+                ]
+              }
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "33", "covered": "5"}},
+              {"$": {"type": "BRANCH", "missed": "2", "covered": "0"}},
+              {"$": {"type": "LINE", "missed": "5", "covered": "2"}},
+              {"$": {"type": "METHOD", "missed": "2", "covered": "1"}}
+            ]
+          }
+        ],
+        "sourcefile": [
+          {
+            "$": {"name": "ParcelDeliveryDetailsService.kt"},
+            "line": [
+              {"$": {"nr": "7", "mi": "0", "ci": "2", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "8", "mi": "0", "ci": "3", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "10", "mi": "12", "ci": "0", "mb": "2", "cb": "0"}},
+              {"$": {"nr": "11", "mi": "1", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "12", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "13", "mi": "8", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "16", "mi": "10", "ci": "0", "mb": "0", "cb": "0"}}
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "33", "covered": "5"}},
+              {"$": {"type": "BRANCH", "missed": "2", "covered": "0"}},
+              {"$": {"type": "LINE", "missed": "5", "covered": "2"}}
+            ]
+          },
+          {
+            "$": {"name": "ParcelDeliveryDetails.kt"},
+            "line": [
+              {"$": {"nr": "10", "mi": "0", "ci": "2", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "17", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "18", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "21", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "22", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "23", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "24", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "25", "mi": "0", "ci": "4", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "27", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "28", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "29", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "30", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "31", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "32", "mi": "0", "ci": "7", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "35", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "36", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "37", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "38", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "39", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "40", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "41", "mi": "0", "ci": "7", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "45", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "46", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "47", "mi": "0", "ci": "4", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "51", "mi": "0", "ci": "11", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "52", "mi": "2", "ci": "16", "mb": "3", "cb": "3"}},
+              {"$": {"nr": "53", "mi": "0", "ci": "5", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "54", "mi": "0", "ci": "2", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "55", "mi": "0", "ci": "2", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "56", "mi": "0", "ci": "4", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "57", "mi": "0", "ci": "2", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "58", "mi": "0", "ci": "2", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "60", "mi": "3", "ci": "0", "mb": "2", "cb": "0"}},
+              {"$": {"nr": "61", "mi": "5", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "62", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "63", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "64", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "65", "mi": "3", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "66", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "67", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "68", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "69", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "70", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "71", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "72", "mi": "10", "ci": "0", "mb": "4", "cb": "0"}},
+              {"$": {"nr": "73", "mi": "5", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "74", "mi": "5", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "75", "mi": "1", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "77", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "78", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "80", "mi": "4", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "81", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}},
+              {"$": {"nr": "82", "mi": "2", "ci": "0", "mb": "0", "cb": "0"}}
+            ],
+            "counter": [
+              {"$": {"type": "INSTRUCTION", "missed": "64", "covered": "163"}},
+              {"$": {"type": "BRANCH", "missed": "9", "covered": "3"}},
+              {"$": {"type": "LINE", "missed": "21", "covered": "32"}}
+            ]
+          }
+        ],
+        "counter": [
+          {"$": {"type": "INSTRUCTION", "missed": "97", "covered": "168"}},
+          {"$": {"type": "BRANCH", "missed": "11", "covered": "3"}},
+          {"$": {"type": "LINE", "missed": "26", "covered": "34"}},
+          {"$": {"type": "METHOD", "missed": "2", "covered": "7"}},
+          {"$": {"type": "CLASS", "missed": "0", "covered": "7"}}
+        ]
+      }
+    ],
+    "counter": [
+      {"$": {"type": "INSTRUCTION", "missed": "1577", "covered": "15522"}},
+      {"$": {"type": "BRANCH", "missed": "328", "covered": "555"}},
+      {"$": {"type": "LINE", "missed": "182", "covered": "2079"}},
+      {"$": {"type": "METHOD", "missed": "70", "covered": "367"}},
+      {"$": {"type": "CLASS", "missed": "48", "covered": "216"}}
+    ]
+  }
+}

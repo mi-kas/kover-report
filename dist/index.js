@@ -6,29 +6,6 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,63 +16,95 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
-const github = __importStar(__nccwpck_require__(5438));
+exports.getChangedFiles = exports.addComment = exports.getDetails = exports.run = void 0;
 const render_1 = __nccwpck_require__(9089);
 const reader_1 = __nccwpck_require__(7433);
-const run = (core) => __awaiter(void 0, void 0, void 0, function* () {
+const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     const path = core.getInput('path', { required: true });
     const token = core.getInput('token', { required: true });
-    const title = core.getInput('title', { required: false });
-    const minCoverageOverall = parseFloat(core.getInput('min-coverage-overall', {
+    const titleInput = core.getInput('title', { required: false });
+    const title = titleInput !== '' ? titleInput : undefined;
+    const minCoverageOverallInput = core.getInput('min-coverage-overall', {
         required: false
-    }));
-    // const minCoverageChangedFiles = parseFloat(
-    //   core.getInput('min-coverage-changed-files', {
-    //     required: false
-    //   })
-    // )
+    });
+    const minCoverageOverall = minCoverageOverallInput !== ''
+        ? parseFloat(minCoverageOverallInput)
+        : undefined;
+    const minCoverageChangedFilesInput = core.getInput('min-coverage-changed-files', {
+        required: false
+    });
+    const minCoverageChangedFiles = minCoverageChangedFilesInput !== ''
+        ? parseFloat(minCoverageChangedFilesInput)
+        : undefined;
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
-    const prNumber = getPrNumber(event, github.context);
-    const coverage = yield (0, reader_1.getReportCoverage)(path);
-    if (!coverage) {
+    const details = (0, exports.getDetails)(event, github.context.payload);
+    const report = yield (0, reader_1.parseReport)(path);
+    if (!report) {
+        throw Error('No kover report detected');
+    }
+    const overallCoverage = (0, reader_1.getOverallCoverage)(report);
+    if (!overallCoverage) {
         throw Error('No project coverage detected');
     }
-    const comment = (0, render_1.createComment)(coverage, minCoverageOverall);
-    core.setOutput('coverage-overall', coverage.percentage);
-    if (prNumber != null) {
-        yield addComment(prNumber, title, comment, octokit);
+    core.setOutput('coverage-overall', overallCoverage.percentage);
+    const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
+    const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles);
+    core.setOutput('coverage-changed-files', filesCoverage.percentage);
+    const comment = (0, render_1.createComment)(overallCoverage, filesCoverage, minCoverageOverall, minCoverageChangedFiles);
+    if (details.prNumber != null) {
+        yield (0, exports.addComment)(details.prNumber, title, comment, octokit, github.context.repo);
     }
 });
 exports.run = run;
-const getPrNumber = (event, context) => {
-    var _a, _b;
+const getDetails = (event, payload) => {
+    var _a, _b, _c, _d;
     switch (event) {
         case 'pull_request':
         case 'pull_request_target':
-            return (_b = (_a = context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) !== null && _b !== void 0 ? _b : null;
+            return {
+                prNumber: (_b = (_a = payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) !== null && _b !== void 0 ? _b : null,
+                base: (_c = payload.pull_request) === null || _c === void 0 ? void 0 : _c.base.sha,
+                head: (_d = payload.pull_request) === null || _d === void 0 ? void 0 : _d.head.sha
+            };
         case 'push':
-            return null;
+            return {
+                prNumber: null,
+                base: payload.before,
+                head: payload.after
+            };
         default:
-            throw Error(`Only pull requests and pushes are supported, ${context.eventName} not supported.`);
+            throw Error(`Only pull requests and pushes are supported, ${event} not supported.`);
     }
 };
-const addComment = (prNumber, title, body, client) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getDetails = getDetails;
+const addComment = (prNumber, title, body, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
     let commentUpdated = false;
     if (title) {
-        const comments = yield client.rest.issues.listComments(Object.assign({ issue_number: prNumber }, github.context.repo));
-        const comment = comments.data.find(c => { var _a; return (_a = c.body) === null || _a === void 0 ? void 0 : _a.startsWith(title); });
+        const comments = yield client.rest.issues.listComments(Object.assign({ issue_number: prNumber }, repo));
+        const comment = comments.data.find(c => { var _a, _b; return (_b = (_a = c.body) === null || _a === void 0 ? void 0 : _a.startsWith(title)) !== null && _b !== void 0 ? _b : false; });
+        console.log(comment);
         if (comment) {
-            yield client.rest.issues.updateComment(Object.assign({ comment_id: comment.id, body }, github.context.repo));
+            yield client.rest.issues.updateComment(Object.assign({ comment_id: comment.id, body }, repo));
             commentUpdated = true;
         }
     }
     if (!commentUpdated) {
-        yield client.rest.issues.createComment(Object.assign({ issue_number: prNumber, body }, github.context.repo));
+        yield client.rest.issues.createComment(Object.assign({ issue_number: prNumber, body }, repo));
     }
 });
+exports.addComment = addComment;
+const getChangedFiles = (base, head, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const response = yield client.rest.repos.compareCommits(Object.assign({ base,
+        head }, repo));
+    return ((_b = (_a = response.data.files) === null || _a === void 0 ? void 0 : _a.map(file => ({
+        filePath: file.filename,
+        url: file.blob_url
+    }))) !== null && _b !== void 0 ? _b : []);
+});
+exports.getChangedFiles = getChangedFiles;
 
 
 /***/ }),
@@ -130,9 +139,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
 const action_1 = __nccwpck_require__(9139);
 try {
-    (0, action_1.run)(core);
+    (0, action_1.run)(core, github);
 }
 catch (error) {
     core.setFailed(error.message);
@@ -179,32 +189,69 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getReportCoverage = void 0;
+exports.getTotalPercentage = exports.getFileCoverage = exports.getOverallCoverage = exports.getCoverageFromCounters = exports.parseReport = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const parser = __importStar(__nccwpck_require__(6189));
-const getReportCoverage = (path) => __awaiter(void 0, void 0, void 0, function* () {
-    const report = yield parseXmlReport(path);
-    return getCoverage(report);
-});
-exports.getReportCoverage = getReportCoverage;
-const parseXmlReport = (xmlPath) => __awaiter(void 0, void 0, void 0, function* () {
-    const reportXml = yield fs.promises.readFile(xmlPath.trim(), 'utf-8');
+const parseReport = (path) => __awaiter(void 0, void 0, void 0, function* () {
+    const reportXml = yield fs.promises.readFile(path.trim(), 'utf-8');
     return parser.parseStringPromise(reportXml);
 });
-const getCoverage = (report) => {
+exports.parseReport = parseReport;
+const getCoverageFromCounters = (counters) => {
     var _a;
-    const counters = report['report']['counter'];
-    const lineCounter = (_a = counters.find(counter => counter['$']['type'] === 'LINE')) === null || _a === void 0 ? void 0 : _a['$'];
+    const lineCounter = (_a = counters.find(counter => counter['$'].type === 'LINE')) === null || _a === void 0 ? void 0 : _a['$'];
     if (!lineCounter)
         return null;
-    const missed = parseFloat(lineCounter['missed']);
-    const covered = parseFloat(lineCounter['covered']);
+    const missed = parseFloat(lineCounter.missed);
+    const covered = parseFloat(lineCounter.covered);
     return {
         missed,
         covered,
         percentage: parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
     };
 };
+exports.getCoverageFromCounters = getCoverageFromCounters;
+const getOverallCoverage = (report) => {
+    var _a;
+    if (!((_a = report.report) === null || _a === void 0 ? void 0 : _a.counter))
+        return null;
+    return (0, exports.getCoverageFromCounters)(report.report.counter);
+};
+exports.getOverallCoverage = getOverallCoverage;
+const getFileCoverage = (report, files) => {
+    var _a;
+    const filesWithCoverage = files.reduce((acc, file) => {
+        var _a, _b;
+        (_b = (_a = report.report) === null || _a === void 0 ? void 0 : _a.package) === null || _b === void 0 ? void 0 : _b.map(item => {
+            const packageName = item['$'].name;
+            const sourceFile = item.sourcefile.find(sf => {
+                const sourceFileName = sf['$'].name;
+                return file.filePath.endsWith(`${packageName}/${sourceFileName}`);
+            });
+            if (sourceFile) {
+                const coverage = (0, exports.getCoverageFromCounters)(sourceFile.counter);
+                if (coverage)
+                    acc.push(Object.assign(Object.assign({}, file), coverage));
+            }
+        });
+        return acc;
+    }, []);
+    return {
+        files: filesWithCoverage,
+        percentage: (_a = (0, exports.getTotalPercentage)(filesWithCoverage)) !== null && _a !== void 0 ? _a : 100
+    };
+};
+exports.getFileCoverage = getFileCoverage;
+const getTotalPercentage = (files) => {
+    if (files.length === 0)
+        return null;
+    const result = files.reduce((acc, file) => ({
+        missed: acc.missed + file.missed,
+        covered: acc.covered + file.covered
+    }), { missed: 0, covered: 0 });
+    return parseFloat(((result.covered / (result.covered + result.missed)) * 100).toFixed(2));
+};
+exports.getTotalPercentage = getTotalPercentage;
 
 
 /***/ }),
@@ -215,14 +262,23 @@ const getCoverage = (report) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createComment = void 0;
-const createComment = (coverage, minCoverageOverall) => {
-    return `
-  |Total Project Coverage|${coverage.percentage}%|${coverage.percentage >= minCoverageOverall ? ':white_check_mark:' : ':x:'}|
-  |:-|:-:|:-:|
-  `;
+exports.renderEmoji = exports.createComment = void 0;
+const createComment = (coverage, changedFilesCoverage, minCoverageOverall, minCoverageChangedFiles) => {
+    return `${changedFilesCoverage.files.length > 0
+        ? `|File|Coverage [${changedFilesCoverage.percentage.toFixed(2)}%]|${minCoverageChangedFiles
+            ? (0, exports.renderEmoji)(changedFilesCoverage.percentage, minCoverageChangedFiles)
+            : ''}\n|:-|:-:|${minCoverageChangedFiles ? ':-:|' : ''}\n${changedFilesCoverage.files
+            .map(file => `|[${file.filePath}](${file.url})|${file.percentage.toFixed(2)}%|${minCoverageChangedFiles
+            ? (0, exports.renderEmoji)(file.percentage, minCoverageChangedFiles)
+            : ''}`)
+            .join('\n')}\n\n`
+        : ''}|Total Project Coverage|${coverage.percentage.toFixed(2)}%|${minCoverageOverall
+        ? (0, exports.renderEmoji)(coverage.percentage, minCoverageOverall)
+        : ''}\n|:-|:-:|${minCoverageOverall ? ':-:|' : ''}`;
 };
 exports.createComment = createComment;
+const renderEmoji = (percentage, minPercentage) => (percentage >= minPercentage ? ':white_check_mark:|' : ':x:|');
+exports.renderEmoji = renderEmoji;
 
 
 /***/ }),
