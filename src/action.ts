@@ -10,24 +10,25 @@ export const run = async (
 ): Promise<void> => {
   const path = core.getInput('path', {required: true})
   const token = core.getInput('token', {required: true})
-  const title = core.getInput('title', {required: false})
+  const titleInput = core.getInput('title', {required: false})
+  const title = titleInput !== '' ? titleInput : undefined
   const minCoverageOverallInput = core.getInput('min-coverage-overall', {
     required: false
   })
-  let minCoverageOverall: number | undefined
-  if (minCoverageOverallInput !== '') {
-    minCoverageOverall = parseFloat(minCoverageOverallInput)
-  }
+  const minCoverageOverall =
+    minCoverageOverallInput !== ''
+      ? parseFloat(minCoverageOverallInput)
+      : undefined
   const minCoverageChangedFilesInput = core.getInput(
     'min-coverage-changed-files',
     {
       required: false
     }
   )
-  let minCoverageChangedFiles: number | undefined
-  if (minCoverageChangedFilesInput !== '') {
-    minCoverageChangedFiles = parseFloat(minCoverageChangedFilesInput)
-  }
+  const minCoverageChangedFiles =
+    minCoverageChangedFilesInput !== ''
+      ? parseFloat(minCoverageChangedFilesInput)
+      : undefined
 
   const octokit = github.getOctokit(token)
   const event = github.context.eventName
@@ -73,7 +74,7 @@ export const run = async (
   }
 }
 
-const getDetails = (
+export const getDetails = (
   event: string,
   payload: typeof actionsGithub.context.payload
 ): {prNumber: number | null; base: string; head: string} => {
@@ -98,9 +99,9 @@ const getDetails = (
   }
 }
 
-const addComment = async (
+export const addComment = async (
   prNumber: number,
-  title: string,
+  title: string | undefined,
   body: string,
   client: ReturnType<typeof actionsGithub.getOctokit>,
   repo: typeof actionsGithub.context.repo
@@ -112,7 +113,8 @@ const addComment = async (
       issue_number: prNumber,
       ...repo
     })
-    const comment = comments.data.find(c => c.body?.startsWith(title))
+    const comment = comments.data.find(c => c.body?.startsWith(title) ?? false)
+    console.log(comment)
 
     if (comment) {
       await client.rest.issues.updateComment({
@@ -133,7 +135,7 @@ const addComment = async (
   }
 }
 
-const getChangedFiles = async (
+export const getChangedFiles = async (
   base: string,
   head: string,
   client: ReturnType<typeof actionsGithub.getOctokit>,
@@ -142,8 +144,7 @@ const getChangedFiles = async (
   const response = await client.rest.repos.compareCommits({
     base,
     head,
-    owner: repo.owner,
-    repo: repo.repo
+    ...repo
   })
 
   return (

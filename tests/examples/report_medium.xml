@@ -1,0 +1,173 @@
+<?xml version="1.0" ?>
+<report name="Intellij Coverage Report">
+<package name="com/github/mi-kas/parceldeliverydetails/domain">
+<class name="com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails" sourcefilename="ParcelDeliveryDetails.kt">
+<method name="&lt;init&gt;" desc="(JLjava/time/Instant;)V">
+<counter type="INSTRUCTION" missed="0" covered="12"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="3"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="12"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="3"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails$Available" sourcefilename="ParcelDeliveryDetails.kt">
+<method name="&lt;init&gt;" desc="(Ljava/lang/String;Ljava/lang/String;JLjava/time/Instant;)V">
+<counter type="INSTRUCTION" missed="0" covered="24"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="24"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="5"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails$Available$Neighbor" sourcefilename="ParcelDeliveryDetails.kt">
+<method name="&lt;init&gt;" desc="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/time/Instant;)V">
+<counter type="INSTRUCTION" missed="0" covered="32"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="6"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="32"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="6"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails$Available$ParcelShop" sourcefilename="ParcelDeliveryDetails.kt">
+<method name="&lt;init&gt;" desc="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lcom/github/mi-kas/parcel/domain/Address;JLjava/time/Instant;)V">
+<counter type="INSTRUCTION" missed="0" covered="37"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="7"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="37"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="7"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails$Unavailable" sourcefilename="ParcelDeliveryDetails.kt">
+<method name="&lt;init&gt;" desc="(JLjava/time/Instant;)V">
+<counter type="INSTRUCTION" missed="0" covered="14"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="3"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="14"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="3"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetailsKt" sourcefilename="ParcelDeliveryDetails.kt">
+<method name="toDto" desc="(Lcom/github/mi-kas/parceldeliverydetails/db/ParcelDeliveryDetailsEntity;)Lcom/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetails;">
+<counter type="INSTRUCTION" missed="64" covered="44"/>
+<counter type="BRANCH" missed="9" covered="3"/>
+<counter type="LINE" missed="21" covered="8"/>
+</method>
+<counter type="INSTRUCTION" missed="64" covered="44"/>
+<counter type="BRANCH" missed="9" covered="3"/>
+<counter type="LINE" missed="21" covered="8"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetailsService" sourcefilename="ParcelDeliveryDetailsService.kt">
+<method name="&lt;init&gt;" desc="(Lcom/github/mi-kas/parceldeliverydetails/db/ParcelDeliveryDetailsRepository;)V">
+<counter type="INSTRUCTION" missed="0" covered="5"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="2"/>
+</method>
+<method name="persist$suspendImpl" desc="(Lcom/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetailsService;Lcom/github/mi-kas/parceldeliverydetails/db/ParcelDeliveryDetailsEntity;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="10" covered="0"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="1" covered="0"/>
+</method>
+<method name="findParcelDeliveryDetails$suspendImpl" desc="(Lcom/github/mi-kas/parceldeliverydetails/domain/ParcelDeliveryDetailsService;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="23" covered="0"/>
+<counter type="BRANCH" missed="2" covered="0"/>
+<counter type="LINE" missed="4" covered="0"/>
+</method>
+<counter type="INSTRUCTION" missed="33" covered="5"/>
+<counter type="BRANCH" missed="2" covered="0"/>
+<counter type="LINE" missed="5" covered="2"/>
+<counter type="METHOD" missed="2" covered="1"/>
+</class>
+<sourcefile name="ParcelDeliveryDetailsService.kt">
+<line nr="7" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="8" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="10" mi="12" ci="0" mb="2" cb="0"/>
+<line nr="11" mi="1" ci="0" mb="0" cb="0"/>
+<line nr="12" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="13" mi="8" ci="0" mb="0" cb="0"/>
+<line nr="16" mi="10" ci="0" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="33" covered="5"/>
+<counter type="BRANCH" missed="2" covered="0"/>
+<counter type="LINE" missed="5" covered="2"/>
+</sourcefile>
+<sourcefile name="ParcelDeliveryDetails.kt">
+<line nr="10" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="17" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="18" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="21" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="22" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="23" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="24" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="25" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="27" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="28" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="29" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="30" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="31" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="32" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="35" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="36" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="37" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="38" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="39" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="40" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="41" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="45" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="46" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="47" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="51" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="52" mi="2" ci="16" mb="3" cb="3"/>
+<line nr="53" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="54" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="55" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="56" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="57" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="58" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="60" mi="3" ci="0" mb="2" cb="0"/>
+<line nr="61" mi="5" ci="0" mb="0" cb="0"/>
+<line nr="62" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="63" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="64" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="65" mi="3" ci="0" mb="0" cb="0"/>
+<line nr="66" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="67" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="68" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="69" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="70" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="71" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="72" mi="10" ci="0" mb="4" cb="0"/>
+<line nr="73" mi="5" ci="0" mb="0" cb="0"/>
+<line nr="74" mi="5" ci="0" mb="0" cb="0"/>
+<line nr="75" mi="1" ci="0" mb="0" cb="0"/>
+<line nr="77" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="78" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="80" mi="4" ci="0" mb="0" cb="0"/>
+<line nr="81" mi="2" ci="0" mb="0" cb="0"/>
+<line nr="82" mi="2" ci="0" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="64" covered="163"/>
+<counter type="BRANCH" missed="9" covered="3"/>
+<counter type="LINE" missed="21" covered="32"/>
+</sourcefile>
+<counter type="INSTRUCTION" missed="97" covered="168"/>
+<counter type="BRANCH" missed="11" covered="3"/>
+<counter type="LINE" missed="26" covered="34"/>
+<counter type="METHOD" missed="2" covered="7"/>
+<counter type="CLASS" missed="0" covered="7"/>
+</package>
+<counter type="INSTRUCTION" missed="1577" covered="15522"/>
+<counter type="BRANCH" missed="328" covered="555"/>
+<counter type="LINE" missed="182" covered="2079"/>
+<counter type="METHOD" missed="70" covered="367"/>
+<counter type="CLASS" missed="48" covered="216"/>
+</report>
+

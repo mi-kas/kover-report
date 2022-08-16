@@ -16,31 +16,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.getChangedFiles = exports.addComment = exports.getDetails = exports.run = void 0;
 const render_1 = __nccwpck_require__(9089);
 const reader_1 = __nccwpck_require__(7433);
 const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     const path = core.getInput('path', { required: true });
     const token = core.getInput('token', { required: true });
-    const title = core.getInput('title', { required: false });
+    const titleInput = core.getInput('title', { required: false });
+    const title = titleInput !== '' ? titleInput : undefined;
     const minCoverageOverallInput = core.getInput('min-coverage-overall', {
         required: false
     });
-    let minCoverageOverall;
-    if (minCoverageOverallInput !== '') {
-        minCoverageOverall = parseFloat(minCoverageOverallInput);
-    }
+    const minCoverageOverall = minCoverageOverallInput !== ''
+        ? parseFloat(minCoverageOverallInput)
+        : undefined;
     const minCoverageChangedFilesInput = core.getInput('min-coverage-changed-files', {
         required: false
     });
-    let minCoverageChangedFiles;
-    if (minCoverageChangedFilesInput !== '') {
-        minCoverageChangedFiles = parseFloat(minCoverageChangedFilesInput);
-    }
+    const minCoverageChangedFiles = minCoverageChangedFilesInput !== ''
+        ? parseFloat(minCoverageChangedFilesInput)
+        : undefined;
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
-    const details = getDetails(event, github.context.payload);
+    const details = (0, exports.getDetails)(event, github.context.payload);
     const report = yield (0, reader_1.parseReport)(path);
     if (!report) {
         throw Error('No kover report detected');
@@ -50,12 +49,12 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
         throw Error('No project coverage detected');
     }
     core.setOutput('coverage-overall', overallCoverage.percentage);
-    const changedFiles = yield getChangedFiles(details.base, details.head, octokit, github.context.repo);
+    const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
     const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles);
     core.setOutput('coverage-changed-files', filesCoverage.percentage);
     const comment = (0, render_1.createComment)(overallCoverage, filesCoverage, minCoverageOverall, minCoverageChangedFiles);
     if (details.prNumber != null) {
-        yield addComment(details.prNumber, title, comment, octokit, github.context.repo);
+        yield (0, exports.addComment)(details.prNumber, title, comment, octokit, github.context.repo);
     }
 });
 exports.run = run;
@@ -79,11 +78,13 @@ const getDetails = (event, payload) => {
             throw Error(`Only pull requests and pushes are supported, ${event} not supported.`);
     }
 };
+exports.getDetails = getDetails;
 const addComment = (prNumber, title, body, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
     let commentUpdated = false;
     if (title) {
         const comments = yield client.rest.issues.listComments(Object.assign({ issue_number: prNumber }, repo));
-        const comment = comments.data.find(c => { var _a; return (_a = c.body) === null || _a === void 0 ? void 0 : _a.startsWith(title); });
+        const comment = comments.data.find(c => { var _a, _b; return (_b = (_a = c.body) === null || _a === void 0 ? void 0 : _a.startsWith(title)) !== null && _b !== void 0 ? _b : false; });
+        console.log(comment);
         if (comment) {
             yield client.rest.issues.updateComment(Object.assign({ comment_id: comment.id, body }, repo));
             commentUpdated = true;
@@ -93,19 +94,17 @@ const addComment = (prNumber, title, body, client, repo) => __awaiter(void 0, vo
         yield client.rest.issues.createComment(Object.assign({ issue_number: prNumber, body }, repo));
     }
 });
+exports.addComment = addComment;
 const getChangedFiles = (base, head, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    const response = yield client.rest.repos.compareCommits({
-        base,
-        head,
-        owner: repo.owner,
-        repo: repo.repo
-    });
+    const response = yield client.rest.repos.compareCommits(Object.assign({ base,
+        head }, repo));
     return ((_b = (_a = response.data.files) === null || _a === void 0 ? void 0 : _a.map(file => ({
         filePath: file.filename,
         url: file.blob_url
     }))) !== null && _b !== void 0 ? _b : []);
 });
+exports.getChangedFiles = getChangedFiles;
 
 
 /***/ }),

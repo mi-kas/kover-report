@@ -3,9 +3,10 @@ import {
   parseReport,
   getCoverageFromCounters,
   getOverallCoverage,
-  getTotalPercentage
+  getTotalPercentage,
+  getFileCoverage
 } from '../src/reader'
-import {Report, ChangedFileWithCoverage} from '../src/types'
+import {Report, ChangedFileWithCoverage, ChangedFile} from '../src/types'
 
 describe('Reader functions', () => {
   const sampleReport: Report = {
@@ -83,5 +84,92 @@ describe('Reader functions', () => {
   test('get total percentage from empty changed files', () => {
     const percentage = getTotalPercentage([])
     expect(percentage).toBeNull()
+  })
+
+  test('get changed files coverage', () => {
+    const changedFiles: ChangedFile[] = [
+      {
+        filePath: 'com/github/mi-kas/utils/Details.kt',
+        url: 'file-url-detail'
+      },
+      {
+        filePath: 'com/github/mi-kas/utils/Util.kt',
+        url: 'file-url-util'
+      }
+    ]
+    const report: Report = {
+      ...sampleReport,
+      report: {
+        ...sampleReport.report,
+        package: [
+          {
+            $: {name: 'com/github/mi-kas/utils'},
+            class: [],
+            sourcefile: [
+              {
+                $: {name: 'Details.kt'},
+                line: [],
+                counter: [
+                  {$: {type: 'INSTRUCTION', missed: '33', covered: '5'}},
+                  {$: {type: 'BRANCH', missed: '2', covered: '0'}},
+                  {$: {type: 'LINE', missed: '5', covered: '2'}}
+                ]
+              },
+              {
+                $: {name: 'Util.kt'},
+                line: [],
+                counter: [
+                  {$: {type: 'INSTRUCTION', missed: '64', covered: '163'}},
+                  {$: {type: 'BRANCH', missed: '9', covered: '3'}},
+                  {$: {type: 'LINE', missed: '21', covered: '32'}}
+                ]
+              }
+            ],
+            counter: [
+              {$: {type: 'INSTRUCTION', missed: '97', covered: '168'}},
+              {$: {type: 'BRANCH', missed: '11', covered: '3'}},
+              {$: {type: 'LINE', missed: '26', covered: '34'}},
+              {$: {type: 'METHOD', missed: '2', covered: '7'}},
+              {$: {type: 'CLASS', missed: '0', covered: '7'}}
+            ]
+          }
+        ]
+      }
+    }
+    const coverage = getFileCoverage(report, changedFiles)
+    expect(coverage).toMatchObject({
+      files: [
+        {
+          filePath: 'com/github/mi-kas/utils/Details.kt',
+          url: 'file-url-detail',
+          missed: 5,
+          covered: 2,
+          percentage: 28.57
+        },
+        {
+          filePath: 'com/github/mi-kas/utils/Util.kt',
+          url: 'file-url-util',
+          missed: 21,
+          covered: 32,
+          percentage: 60.38
+        }
+      ],
+      percentage: 56.67
+    })
+  })
+
+  test('get changed files coverage on no matching changes', () => {
+    const changedFiles: ChangedFile[] = [
+      {
+        filePath: 'com/github/mi-kas/utils/Details.kt',
+        url: 'file-url-detail'
+      },
+      {
+        filePath: 'com/github/mi-kas/utils/Util.kt',
+        url: 'file-url-util'
+      }
+    ]
+    const coverage = getFileCoverage(sampleReport, changedFiles)
+    expect(coverage).toMatchObject({files: [], percentage: 100.0})
   })
 })
