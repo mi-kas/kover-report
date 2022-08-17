@@ -52,6 +52,7 @@ jobs:
           paths: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           title: Code Coverage
+          update-comment: true
           min-coverage-overall: 80
           min-coverage-changed-files: 80
 ```

@@ -1,5 +1,4 @@
 import {describe, test, expect, jest} from '@jest/globals'
-import * as actionsGithub from '@actions/github'
 import {addComment, getChangedFiles, getDetails} from '../src/action'
 
 describe('Action functions', () => {
@@ -143,7 +142,7 @@ describe('Action functions', () => {
       owner: 'owner',
       repo: 'repo'
     }
-    await addComment(12, undefined, 'body', client, repo)
+    await addComment(12, undefined, 'body', false, client, repo)
 
     expect(createCommentMock).toHaveBeenCalledWith({
       issue_number: 12,
@@ -154,7 +153,7 @@ describe('Action functions', () => {
 
   test('add comment with title updates existing comment', async () => {
     const listCommentstMock = jest.fn(() =>
-      Promise.resolve({data: [{body: 'title xyz', id: '#8'}]})
+      Promise.resolve({data: [{body: '### title xyz', id: '#8'}]})
     )
     const updateCommentMock = jest.fn(() => Promise.resolve({}))
     const client = {
@@ -169,7 +168,7 @@ describe('Action functions', () => {
       owner: 'owner',
       repo: 'repo'
     }
-    await addComment(12, 'title', 'body', client, repo)
+    await addComment(12, 'title', 'body', true, client, repo)
 
     expect(listCommentstMock).toHaveBeenCalledWith({
       issue_number: 12,
@@ -182,9 +181,9 @@ describe('Action functions', () => {
     })
   })
 
-  test('add comment with title creates new comment', async () => {
+  test('add comment with title creates new comment if no matching comment', async () => {
     const listCommentstMock = jest.fn(() =>
-      Promise.resolve({data: [{body: 'header xyz', id: '#8'}]})
+      Promise.resolve({data: [{body: '### header xyz', id: '#8'}]})
     )
     const createCommentMock = jest.fn(() => Promise.resolve({}))
     const client = {
@@ -199,12 +198,34 @@ describe('Action functions', () => {
       owner: 'owner',
       repo: 'repo'
     }
-    await addComment(12, 'title', 'body', client, repo)
+    await addComment(12, 'title', 'body', true, client, repo)
 
     expect(listCommentstMock).toHaveBeenCalledWith({
       issue_number: 12,
       ...repo
     })
+    expect(createCommentMock).toHaveBeenCalledWith({
+      issue_number: 12,
+      body: 'body',
+      ...repo
+    })
+  })
+
+  test('add comment with title creates new comment', async () => {
+    const createCommentMock = jest.fn(() => Promise.resolve({}))
+    const client = {
+      rest: {
+        issues: {
+          createComment: createCommentMock
+        }
+      }
+    } as any
+    const repo = {
+      owner: 'owner',
+      repo: 'repo'
+    }
+    await addComment(12, 'title', 'body', false, client, repo)
+
     expect(createCommentMock).toHaveBeenCalledWith({
       issue_number: 12,
       body: 'body',

@@ -1,12 +1,13 @@
 import {Coverage, ChangedFilesCoverage} from './types.d'
 
 export const createComment = (
+  title: string | undefined,
   coverage: Coverage,
   changedFilesCoverage: ChangedFilesCoverage,
   minCoverageOverall: number | undefined,
   minCoverageChangedFiles: number | undefined
 ): string => {
-  return `${
+  return `${title ? `### ${title}\n` : ''}${
     changedFilesCoverage.files.length > 0
       ? `|File|Coverage [${changedFilesCoverage.percentage.toFixed(2)}%]|${
           minCoverageChangedFiles

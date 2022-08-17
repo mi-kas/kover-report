@@ -11,6 +11,10 @@ inputs:
   title:
     required: false
     description: 'Title for the pull request comment'
+  update-comment:
+    required: false
+    default: 'false'
+    description: 'Update the coverage report comment instead of creating a new one. Requires title to be set.'
   min-coverage-overall:
     required: false
     description: 'The minimum code coverage that is required to pass for overall project'

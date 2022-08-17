@@ -24,6 +24,7 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     const token = core.getInput('token', { required: true });
     const titleInput = core.getInput('title', { required: false });
     const title = titleInput !== '' ? titleInput : undefined;
+    const updateComment = core.getInput('update-comment', { required: false }) === 'true';
     const minCoverageOverallInput = core.getInput('min-coverage-overall', {
         required: false
     });
@@ -50,12 +51,11 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     }
     core.setOutput('coverage-overall', overallCoverage.percentage);
     const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
-    core.info(`Changed files: ${JSON.stringify(changedFiles)}`);
     const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles);
     core.setOutput('coverage-changed-files', filesCoverage.percentage);
-    const comment = (0, render_1.createComment)(overallCoverage, filesCoverage, minCoverageOverall, minCoverageChangedFiles);
+    const comment = (0, render_1.createComment)(title, overallCoverage, filesCoverage, minCoverageOverall, minCoverageChangedFiles);
     if (details.prNumber != null) {
-        yield (0, exports.addComment)(details.prNumber, title, comment, octokit, github.context.repo);
+        yield (0, exports.addComment)(details.prNumber, title, comment, updateComment, octokit, github.context.repo);
     }
 });
 exports.run = run;
@@ -80,11 +80,11 @@ const getDetails = (event, payload) => {
     }
 };
 exports.getDetails = getDetails;
-const addComment = (prNumber, title, body, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
+const addComment = (prNumber, title, body, updateComment, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
     let commentUpdated = false;
-    if (title) {
+    if (title && updateComment) {
         const comments = yield client.rest.issues.listComments(Object.assign({ issue_number: prNumber }, repo));
-        const comment = comments.data.find(c => { var _a, _b; return (_b = (_a = c.body) === null || _a === void 0 ? void 0 : _a.startsWith(title)) !== null && _b !== void 0 ? _b : false; });
+        const comment = comments.data.find(c => { var _a, _b; return (_b = (_a = c.body) === null || _a === void 0 ? void 0 : _a.startsWith(`### ${title}`)) !== null && _b !== void 0 ? _b : false; });
         if (comment) {
             yield client.rest.issues.updateComment(Object.assign({ comment_id: comment.id, body }, repo));
             commentUpdated = true;
@@ -263,8 +263,8 @@ exports.getTotalPercentage = getTotalPercentage;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.renderEmoji = exports.createComment = void 0;
-const createComment = (coverage, changedFilesCoverage, minCoverageOverall, minCoverageChangedFiles) => {
-    return `${changedFilesCoverage.files.length > 0
+const createComment = (title, coverage, changedFilesCoverage, minCoverageOverall, minCoverageChangedFiles) => {
+    return `${title ? `### ${title}\n` : ''}${changedFilesCoverage.files.length > 0
         ? `|File|Coverage [${changedFilesCoverage.percentage.toFixed(2)}%]|${minCoverageChangedFiles
             ? (0, exports.renderEmoji)(changedFilesCoverage.percentage, minCoverageChangedFiles)
             : ''}\n|:-|:-:|${minCoverageChangedFiles ? ':-:|' : ''}\n${changedFilesCoverage.files

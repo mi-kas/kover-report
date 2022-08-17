@@ -12,6 +12,8 @@ export const run = async (
   const token = core.getInput('token', {required: true})
   const titleInput = core.getInput('title', {required: false})
   const title = titleInput !== '' ? titleInput : undefined
+  const updateComment =
+    core.getInput('update-comment', {required: false}) === 'true'
   const minCoverageOverallInput = core.getInput('min-coverage-overall', {
     required: false
   })
@@ -53,11 +55,11 @@ export const run = async (
     octokit,
     github.context.repo
   )
-  core.info(`Changed files: ${JSON.stringify(changedFiles)}`)
   const filesCoverage = getFileCoverage(report, changedFiles)
   core.setOutput('coverage-changed-files', filesCoverage.percentage)
 
   const comment = createComment(
+    title,
     overallCoverage,
     filesCoverage,
     minCoverageOverall,
@@ -69,6 +71,7 @@ export const run = async (
       details.prNumber,
       title,
       comment,
+      updateComment,
       octokit,
       github.context.repo
     )
@@ -104,17 +107,20 @@ export const addComment = async (
   prNumber: number,
   title: string | undefined,
   body: string,
+  updateComment: boolean,
   client: ReturnType<typeof actionsGithub.getOctokit>,
   repo: typeof actionsGithub.context.repo
 ): Promise<void> => {
   let commentUpdated = false
 
-  if (title) {
+  if (title && updateComment) {
     const comments = await client.rest.issues.listComments({
       issue_number: prNumber,
       ...repo
     })
-    const comment = comments.data.find(c => c.body?.startsWith(title) ?? false)
+    const comment = comments.data.find(
+      c => c.body?.startsWith(`### ${title}`) ?? false
+    )
 
     if (comment) {
       await client.rest.issues.updateComment({
