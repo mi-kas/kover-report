@@ -48,9 +48,9 @@ jobs:
 
       - name: Add coverage report to PR
         id: kover
-        uses: mi-kas/kover-report@v0.1
+        uses: mi-kas/kover-report@v1
         with:
-          paths: ${{ github.workspace }}/build/reports/kover/report.xml
+          path: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
           title: Code Coverage
           update-comment: true
