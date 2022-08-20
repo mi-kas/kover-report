@@ -9,6 +9,6 @@ inputs:
     type: boolean
   min-coverage-overall:
     type: integer
-  min-coverage-changed-files
+  min-coverage-changed-files:
     type: integer
     
