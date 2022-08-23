@@ -1,0 +1,19 @@
+inputs:
+  path:
+    type: string
+  token:
+    type: string
+  title:
+    type: string
+  update-comment:
+    type: boolean
+  min-coverage-overall:
+    type: integer
+  min-coverage-changed-files:
+    type: integer
+    
+outputs:
+   coverage-overall:
+     type: integer
+   coverage-changed-files:
+     type: integer
