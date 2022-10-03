@@ -34,7 +34,7 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
-    "@types/node": "^18.7.9",
+    "@types/node": "^18.8.0",
     "@types/xml2js": "^0.4.11",
     "@typescript-eslint/parser": "^5.34.0",
     "@vercel/ncc": "^0.34.0",
