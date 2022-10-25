@@ -12,17 +12,17 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 
 ### Inputs
 
-- `path` - [**required**] Path to the generated kover report xml file
-- `token` - [**required**] Github personal token to add commits to the pull request
-- `title` - [*optional*] Title for the pull request comment
-- `update-comment` - [*optional* (default: `false`)] Update the coverage report comment instead of creating a new one. Requires `title` to be set.
-- `min-coverage-overall` - [*optional*] The minimum code coverage that is required to pass for overall project
-- `min-coverage-changed-files` - [*optional*] The minimum code coverage that is required to pass for changed files
+- `path` - [**required** string] Path to the generated kover report xml file
+- `token` - [**required** string] Github personal token to add commits to the pull request
+- `title` - [*optional* string] Title for the pull request comment
+- `update-comment` - [*optional* boolean (default: `false`)] Update the coverage report comment instead of creating a new one. Requires `title` to be set.
+- `min-coverage-overall` - [*optional* integer] The minimum code coverage that is required to pass for overall project
+- `min-coverage-changed-files` - [*optional* integer] The minimum code coverage that is required to pass for changed files
 
 ### Outputs
 
-- `coverage-overall` - The overall coverage of the project
-- `coverage-changed-files` - The total coverage of all changed files
+- `coverage-overall` - [integer] The overall coverage of the project
+- `coverage-changed-files` - [integer] The total coverage of all changed files
 
 ### Example Workflow
 
@@ -48,7 +48,7 @@ jobs:
 
       - name: Add coverage report to PR
         id: kover
-        uses: mi-kas/kover-report@v1
+        uses: mi-kas/kover-report@v1.1
         with:
           path: ${{ github.workspace }}/build/reports/kover/report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
