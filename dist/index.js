@@ -228,7 +228,7 @@ const getFileCoverage = (report, files) => {
                 const sourceFileName = sf['$'].name;
                 return file.filePath.endsWith(`${packageName}/${sourceFileName}`);
             });
-            if (sourceFile) {
+            if (sourceFile === null || sourceFile === void 0 ? void 0 : sourceFile.counter) {
                 const coverage = (0, exports.getCoverageFromCounters)(sourceFile.counter);
                 if (coverage)
                     acc.push(Object.assign(Object.assign({}, file), coverage));

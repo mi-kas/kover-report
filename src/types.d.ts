@@ -22,7 +22,7 @@ type SourceFile = {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   line: any[]
-  counter: Counter[]
+  counter?: Counter[]
 }
 
 type Package = {

@@ -123,6 +123,10 @@ describe('Reader functions', () => {
                   {$: {type: 'BRANCH', missed: '9', covered: '3'}},
                   {$: {type: 'LINE', missed: '21', covered: '32'}}
                 ]
+              },
+              {
+                $: {name: 'Logger.kt'},
+                line: []
               }
             ],
             counter: [

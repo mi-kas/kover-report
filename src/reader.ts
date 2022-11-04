@@ -49,7 +49,7 @@ export const getFileCoverage = (
           const sourceFileName = sf['$'].name
           return file.filePath.endsWith(`${packageName}/${sourceFileName}`)
         })
-        if (sourceFile) {
+        if (sourceFile?.counter) {
           const coverage = getCoverageFromCounters(sourceFile.counter)
           if (coverage) acc.push({...file, ...coverage})
         }
