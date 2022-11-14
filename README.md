@@ -63,7 +63,7 @@ jobs:
 
 ## Code of Conduct
 
-Please read the [full Code of Conduct](CODE_OF_CONDUCT) so that you can understand what we expect project participants to adhere to and what actions will and will not be tolerated.
+Please read the [full Code of Conduct](CODE_OF_CONDUCT.md) so that you can understand what we expect project participants to adhere to and what actions will and will not be tolerated.
 
 ## License
 
