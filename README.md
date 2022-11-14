@@ -1,6 +1,6 @@
 # kover-report
 
-[![Tests](https://github.com/mi-kas/kover-report/actions/workflows/test.yml/badge.svg)](https://github.com/mi-kas/kover-report/actions/workflows/test.yml)
+[![Tests](https://github.com/mi-kas/kover-report/actions/workflows/test.yml/badge.svg)](https://github.com/mi-kas/kover-report/actions/workflows/test.yml) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
 A Github action that publishes the [Kover](https://github.com/Kotlin/kotlinx-kover) code coverage report as a comment in pull requests.
 
@@ -61,6 +61,10 @@ jobs:
 <br>
 <img src="/screenshot.png" alt="output screenshot" title="output screenshot" width="500" />
 
+## Code of Conduct
+
+Please read the [full Code of Conduct](CODE_OF_CONDUCT) so that you can understand what we expect project participants to adhere to and what actions will and will not be tolerated.
+
 ## License
 
-The scripts and documentation in this project are released under the [MIT License](LICENSE)
+The scripts and documentation in this project are released under the [MIT License](LICENSE).
