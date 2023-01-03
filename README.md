@@ -65,6 +65,12 @@ jobs:
 
 Please read the [full Code of Conduct](CODE_OF_CONDUCT.md) so that you can understand what we expect project participants to adhere to and what actions will and will not be tolerated.
 
+## Thanks
+
+Besides all the [great open source software](package.json) that is powering `kover-report`, special thanks also to JetBrains for making a [open source development license](https://www.jetbrains.com/community/opensource) available.
+
+<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains logo" width="100" height="100">
+
 ## License
 
 The scripts and documentation in this project are released under the [MIT License](LICENSE).
