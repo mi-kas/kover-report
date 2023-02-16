@@ -31,9 +31,12 @@ export const run = async (
     minCoverageChangedFilesInput !== ''
       ? parseFloat(minCoverageChangedFilesInput)
       : undefined
-  const counterType = core.getInput('coverage-counter-type', {
+  const counterTypeInput = core.getInput('coverage-counter-type', {
     required: false
-  }) as CounterType
+  })
+  const counterType = (
+    counterTypeInput !== '' ? counterTypeInput : 'LINE'
+  ) as CounterType
 
   const octokit = github.getOctokit(token)
   const event = github.context.eventName

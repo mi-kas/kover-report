@@ -37,9 +37,10 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     const minCoverageChangedFiles = minCoverageChangedFilesInput !== ''
         ? parseFloat(minCoverageChangedFilesInput)
         : undefined;
-    const counterType = core.getInput('coverage-counter-type', {
+    const counterTypeInput = core.getInput('coverage-counter-type', {
         required: false
     });
+    const counterType = (counterTypeInput !== '' ? counterTypeInput : 'LINE');
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
