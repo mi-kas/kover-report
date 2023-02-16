@@ -1,10 +1,12 @@
 export type Counter = {
   $: {
-    type: 'INSTRUCTION' | 'BRANCH' | 'LINE' | 'METHOD' | 'CLASS'
+    type: CounterType
     missed: string
     covered: string
   }
 }
+
+export type CounterType = 'INSTRUCTION' | 'BRANCH' | 'LINE' | 'METHOD' | 'CLASS'
 
 type Class = {
   $: {

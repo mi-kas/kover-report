@@ -19,7 +19,7 @@ const run = async (): Promise<void> => {
     }
   ]
 
-  const filesCoverage = getFileCoverage(report, changedFiles)
+  const filesCoverage = getFileCoverage(report, changedFiles, 'LINE')
   console.log(filesCoverage)
 }
 

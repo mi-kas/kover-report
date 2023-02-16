@@ -18,6 +18,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 - `update-comment` - [*optional* boolean (default: `false`)] Update the coverage report comment instead of creating a new one. Requires `title` to be set.
 - `min-coverage-overall` - [*optional* integer] The minimum code coverage that is required to pass for overall project
 - `min-coverage-changed-files` - [*optional* integer] The minimum code coverage that is required to pass for changed files
+- `coverage-counter-type` - [*optional* string (default: `LINE`)] Report counter type used to calculate coverage metrics. Possible values are: `INSTRUCTION`, `LINE` or `BRANCH`.
 
 ### Outputs
 
@@ -56,6 +57,7 @@ jobs:
           update-comment: true
           min-coverage-overall: 80
           min-coverage-changed-files: 80
+          coverage-counter-type: LINE
 ```
 
 <br>
