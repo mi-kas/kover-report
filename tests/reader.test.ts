@@ -27,8 +27,11 @@ describe('Reader functions', () => {
     expect(report).toMatchObject(sampleReport as Record<string, any>)
   })
 
-  test('get coverage from counters', () => {
-    const coverage = getCoverageFromCounters(sampleReport.report.counter!!)
+  test('get coverage from line counters', () => {
+    const coverage = getCoverageFromCounters(
+      sampleReport.report.counter!!,
+      'LINE'
+    )
     expect(coverage).toMatchObject({
       missed: 900,
       covered: 3346,
@@ -36,15 +39,40 @@ describe('Reader functions', () => {
     })
   })
 
+  test('get coverage from branch counters', () => {
+    const coverage = getCoverageFromCounters(
+      sampleReport.report.counter!!,
+      'BRANCH'
+    )
+    expect(coverage).toMatchObject({
+      missed: 665,
+      covered: 874,
+      percentage: 56.79
+    })
+  })
+
+  test('get coverage from instruction counters', () => {
+    const coverage = getCoverageFromCounters(
+      sampleReport.report.counter!!,
+      'INSTRUCTION'
+    )
+    expect(coverage).toMatchObject({
+      missed: 7418,
+      covered: 25767,
+      percentage: 77.65
+    })
+  })
+
   test('get coverage from counters returns null if no line counters', () => {
     const coverage = getCoverageFromCounters(
-      sampleReport.report.counter!!.filter(c => c.$.type !== 'LINE')
+      sampleReport.report.counter!!.filter(c => c.$.type !== 'LINE'),
+      'LINE'
     )
     expect(coverage).toBeNull()
   })
 
   test('get overall coverage from report', () => {
-    const coverage = getOverallCoverage(sampleReport)
+    const coverage = getOverallCoverage(sampleReport, 'LINE')
     expect(coverage).toMatchObject({
       missed: 900,
       covered: 3346,
@@ -53,10 +81,13 @@ describe('Reader functions', () => {
   })
 
   test('get overall coverage from report returns null if no counters', () => {
-    const coverage = getOverallCoverage({
-      ...sampleReport,
-      report: {...sampleReport.report, counter: undefined}
-    })
+    const coverage = getOverallCoverage(
+      {
+        ...sampleReport,
+        report: {...sampleReport.report, counter: undefined}
+      },
+      'LINE'
+    )
     expect(coverage).toBeNull()
   })
 
@@ -140,7 +171,7 @@ describe('Reader functions', () => {
         ]
       }
     }
-    const coverage = getFileCoverage(report, changedFiles)
+    const coverage = getFileCoverage(report, changedFiles, 'LINE')
     expect(coverage).toMatchObject({
       files: [
         {
@@ -173,7 +204,7 @@ describe('Reader functions', () => {
         url: 'file-url-util'
       }
     ]
-    const coverage = getFileCoverage(sampleReport, changedFiles)
+    const coverage = getFileCoverage(sampleReport, changedFiles, 'LINE')
     expect(coverage).toMatchObject({files: [], percentage: 100.0})
   })
 })

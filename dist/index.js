@@ -37,6 +37,9 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     const minCoverageChangedFiles = minCoverageChangedFilesInput !== ''
         ? parseFloat(minCoverageChangedFilesInput)
         : undefined;
+    const counterType = core.getInput('coverage-counter-type', {
+        required: false
+    });
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
@@ -45,13 +48,13 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     if (!report) {
         throw Error('No kover report detected');
     }
-    const overallCoverage = (0, reader_1.getOverallCoverage)(report);
+    const overallCoverage = (0, reader_1.getOverallCoverage)(report, counterType);
     if (!overallCoverage) {
         throw Error('No project coverage detected');
     }
     core.setOutput('coverage-overall', overallCoverage.percentage);
     const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
-    const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles);
+    const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles, counterType);
     core.setOutput('coverage-changed-files', filesCoverage.percentage);
     const comment = (0, render_1.createComment)(title, overallCoverage, filesCoverage, minCoverageOverall, minCoverageChangedFiles);
     if (details.prNumber != null) {
@@ -197,9 +200,9 @@ const parseReport = (path) => __awaiter(void 0, void 0, void 0, function* () {
     return parser.parseStringPromise(reportXml);
 });
 exports.parseReport = parseReport;
-const getCoverageFromCounters = (counters) => {
+const getCoverageFromCounters = (counters, counterType) => {
     var _a;
-    const lineCounter = (_a = counters.find(counter => counter['$'].type === 'LINE')) === null || _a === void 0 ? void 0 : _a['$'];
+    const lineCounter = (_a = counters.find(counter => counter['$'].type === counterType)) === null || _a === void 0 ? void 0 : _a['$'];
     if (!lineCounter)
         return null;
     const missed = parseFloat(lineCounter.missed);
@@ -211,14 +214,14 @@ const getCoverageFromCounters = (counters) => {
     };
 };
 exports.getCoverageFromCounters = getCoverageFromCounters;
-const getOverallCoverage = (report) => {
+const getOverallCoverage = (report, counterType) => {
     var _a;
     if (!((_a = report.report) === null || _a === void 0 ? void 0 : _a.counter))
         return null;
-    return (0, exports.getCoverageFromCounters)(report.report.counter);
+    return (0, exports.getCoverageFromCounters)(report.report.counter, counterType);
 };
 exports.getOverallCoverage = getOverallCoverage;
-const getFileCoverage = (report, files) => {
+const getFileCoverage = (report, files, counterType) => {
     var _a;
     const filesWithCoverage = files.reduce((acc, file) => {
         var _a, _b;
@@ -229,7 +232,7 @@ const getFileCoverage = (report, files) => {
                 return file.filePath.endsWith(`${packageName}/${sourceFileName}`);
             });
             if (sourceFile === null || sourceFile === void 0 ? void 0 : sourceFile.counter) {
-                const coverage = (0, exports.getCoverageFromCounters)(sourceFile.counter);
+                const coverage = (0, exports.getCoverageFromCounters)(sourceFile.counter, counterType);
                 if (coverage)
                     acc.push(Object.assign(Object.assign({}, file), coverage));
             }

@@ -6,7 +6,8 @@ import {
   Coverage,
   ChangedFile,
   ChangedFilesCoverage,
-  ChangedFileWithCoverage
+  ChangedFileWithCoverage,
+  CounterType
 } from './types.d'
 
 export const parseReport = async (path: string): Promise<Report | null> => {
@@ -15,11 +16,12 @@ export const parseReport = async (path: string): Promise<Report | null> => {
 }
 
 export const getCoverageFromCounters = (
-  counters: Counter[]
+  counters: Counter[],
+  counterType: CounterType
 ): Coverage | null => {
-  const lineCounter = counters.find(counter => counter['$'].type === 'LINE')?.[
-    '$'
-  ]
+  const lineCounter = counters.find(
+    counter => counter['$'].type === counterType
+  )?.['$']
   if (!lineCounter) return null
 
   const missed = parseFloat(lineCounter.missed)
@@ -32,14 +34,18 @@ export const getCoverageFromCounters = (
   }
 }
 
-export const getOverallCoverage = (report: Report): Coverage | null => {
+export const getOverallCoverage = (
+  report: Report,
+  counterType: CounterType
+): Coverage | null => {
   if (!report.report?.counter) return null
-  return getCoverageFromCounters(report.report.counter)
+  return getCoverageFromCounters(report.report.counter, counterType)
 }
 
 export const getFileCoverage = (
   report: Report,
-  files: ChangedFile[]
+  files: ChangedFile[],
+  counterType: CounterType
 ): ChangedFilesCoverage => {
   const filesWithCoverage = files.reduce<ChangedFileWithCoverage[]>(
     (acc, file) => {
@@ -50,7 +56,10 @@ export const getFileCoverage = (
           return file.filePath.endsWith(`${packageName}/${sourceFileName}`)
         })
         if (sourceFile?.counter) {
-          const coverage = getCoverageFromCounters(sourceFile.counter)
+          const coverage = getCoverageFromCounters(
+            sourceFile.counter,
+            counterType
+          )
           if (coverage) acc.push({...file, ...coverage})
         }
       })

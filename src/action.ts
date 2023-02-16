@@ -2,7 +2,7 @@ import * as actionsCore from '@actions/core'
 import * as actionsGithub from '@actions/github'
 import {createComment} from './render'
 import {parseReport, getOverallCoverage, getFileCoverage} from './reader'
-import {ChangedFile} from './types.d'
+import {ChangedFile, CounterType} from './types.d'
 
 export const run = async (
   core: typeof actionsCore,
@@ -31,6 +31,9 @@ export const run = async (
     minCoverageChangedFilesInput !== ''
       ? parseFloat(minCoverageChangedFilesInput)
       : undefined
+  const counterType = core.getInput('coverage-counter-type', {
+    required: false
+  }) as CounterType
 
   const octokit = github.getOctokit(token)
   const event = github.context.eventName
@@ -43,7 +46,7 @@ export const run = async (
     throw Error('No kover report detected')
   }
 
-  const overallCoverage = getOverallCoverage(report)
+  const overallCoverage = getOverallCoverage(report, counterType)
   if (!overallCoverage) {
     throw Error('No project coverage detected')
   }
@@ -55,7 +58,7 @@ export const run = async (
     octokit,
     github.context.repo
   )
-  const filesCoverage = getFileCoverage(report, changedFiles)
+  const filesCoverage = getFileCoverage(report, changedFiles, counterType)
   core.setOutput('coverage-changed-files', filesCoverage.percentage)
 
   const comment = createComment(

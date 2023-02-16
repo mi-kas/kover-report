@@ -11,9 +11,15 @@ inputs:
     type: integer
   min-coverage-changed-files:
     type: integer
-    
+  coverage-counter-type:
+    type: enum
+    allowed-values:
+      - INSTRUCTION
+      - LINE
+      - BRANCH
+
 outputs:
-   coverage-overall:
-     type: integer
-   coverage-changed-files:
-     type: integer
+  coverage-overall:
+    type: integer
+  coverage-changed-files:
+    type: integer

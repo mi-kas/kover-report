@@ -21,6 +21,9 @@ inputs:
   min-coverage-changed-files:
     required: false
     description: 'The minimum code coverage that is required to pass for changed files'
+  coverage-counter-type:
+    required: false
+    description: 'Report counter type (`INSTRUCTION``, `LINE` or `BRANCH`) to calculate coverage metrics.'
 
 outputs:
   coverage-overall:
