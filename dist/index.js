@@ -268,20 +268,36 @@ exports.getTotalPercentage = getTotalPercentage;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.renderEmoji = exports.createComment = void 0;
 const createComment = (title, coverage, changedFilesCoverage, minCoverageOverall, minCoverageChangedFiles) => {
-    return `${title ? `### ${title}\n` : ''}${changedFilesCoverage.files.length > 0
-        ? `|File|Coverage [${changedFilesCoverage.percentage.toFixed(2)}%]|${minCoverageChangedFiles
-            ? (0, exports.renderEmoji)(changedFilesCoverage.percentage, minCoverageChangedFiles)
-            : ''}\n|:-|:-:|${minCoverageChangedFiles ? ':-:|' : ''}\n${changedFilesCoverage.files
-            .map(file => `|[${file.filePath}](${file.url})|${file.percentage.toFixed(2)}%|${minCoverageChangedFiles
-            ? (0, exports.renderEmoji)(file.percentage, minCoverageChangedFiles)
-            : ''}`)
-            .join('\n')}\n\n`
-        : ''}|Total Project Coverage|${coverage.percentage.toFixed(2)}%|${minCoverageOverall
+    // Build title markdown
+    const titleMarkdown = title ? `### ${title}\n` : '';
+    // Build changed files markdown
+    let changedFilesMarkdown = '';
+    if (changedFilesCoverage.files.length > 0) {
+        const filesTableRows = changedFilesCoverage.files
+            .map(file => {
+            const emoji = minCoverageChangedFiles
+                ? (0, exports.renderEmoji)(file.percentage, minCoverageChangedFiles)
+                : '';
+            const fileName = file.filePath.split('/').pop();
+            return `|[${fileName}](${file.url})|${file.percentage.toFixed(2)}%|${emoji}`;
+        })
+            .join('\n');
+        const emojiHeader = minCoverageChangedFiles ? ':-:|' : '';
+        const filesTableHeader = `|File|Coverage [${changedFilesCoverage.percentage.toFixed(2)}%]|${emojiHeader}\n`;
+        const filesTableSubHeader = `|:-|:-:|${emojiHeader}\n`;
+        changedFilesMarkdown = `${filesTableHeader}${filesTableSubHeader}${filesTableRows}\n\n`;
+    }
+    // Build total coverage markdown
+    const totalEmoji = minCoverageOverall
         ? (0, exports.renderEmoji)(coverage.percentage, minCoverageOverall)
-        : ''}\n|:-|:-:|${minCoverageOverall ? ':-:|' : ''}`;
+        : '';
+    const totalEmojiHeader = minCoverageOverall ? ':-:|' : '';
+    const totalCoverageMarkdown = `|Total Project Coverage|${coverage.percentage.toFixed(2)}%|${totalEmoji}\n|:-|:-:|${totalEmojiHeader}`;
+    // Return combined markdown
+    return `${titleMarkdown}${changedFilesMarkdown}${totalCoverageMarkdown}`;
 };
 exports.createComment = createComment;
-const renderEmoji = (percentage, minPercentage) => (percentage >= minPercentage ? ':white_check_mark:|' : ':x:|');
+const renderEmoji = (percentage, minPercentage) => (percentage >= minPercentage ? ':white_check_mark:|' : ':hankey:|');
 exports.renderEmoji = renderEmoji;
 
 

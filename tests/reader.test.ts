@@ -141,18 +141,54 @@ describe('Reader functions', () => {
                 $: {name: 'Details.kt'},
                 line: [],
                 counter: [
-                  {$: {type: 'INSTRUCTION', missed: '33', covered: '5'}},
-                  {$: {type: 'BRANCH', missed: '2', covered: '0'}},
-                  {$: {type: 'LINE', missed: '5', covered: '2'}}
+                  {
+                    $: {
+                      type: 'INSTRUCTION',
+                      missed: '33',
+                      covered: '5'
+                    }
+                  },
+                  {
+                    $: {
+                      type: 'BRANCH',
+                      missed: '2',
+                      covered: '0'
+                    }
+                  },
+                  {
+                    $: {
+                      type: 'LINE',
+                      missed: '5',
+                      covered: '2'
+                    }
+                  }
                 ]
               },
               {
                 $: {name: 'Util.kt'},
                 line: [],
                 counter: [
-                  {$: {type: 'INSTRUCTION', missed: '64', covered: '163'}},
-                  {$: {type: 'BRANCH', missed: '9', covered: '3'}},
-                  {$: {type: 'LINE', missed: '21', covered: '32'}}
+                  {
+                    $: {
+                      type: 'INSTRUCTION',
+                      missed: '64',
+                      covered: '163'
+                    }
+                  },
+                  {
+                    $: {
+                      type: 'BRANCH',
+                      missed: '9',
+                      covered: '3'
+                    }
+                  },
+                  {
+                    $: {
+                      type: 'LINE',
+                      missed: '21',
+                      covered: '32'
+                    }
+                  }
                 ]
               },
               {
@@ -161,7 +197,13 @@ describe('Reader functions', () => {
               }
             ],
             counter: [
-              {$: {type: 'INSTRUCTION', missed: '97', covered: '168'}},
+              {
+                $: {
+                  type: 'INSTRUCTION',
+                  missed: '97',
+                  covered: '168'
+                }
+              },
               {$: {type: 'BRANCH', missed: '11', covered: '3'}},
               {$: {type: 'LINE', missed: '26', covered: '34'}},
               {$: {type: 'METHOD', missed: '2', covered: '7'}},

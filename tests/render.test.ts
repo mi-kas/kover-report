@@ -1,12 +1,12 @@
-import {describe, test, expect} from '@jest/globals'
+import {describe, expect, test} from '@jest/globals'
 import {createComment, renderEmoji} from '../src/render'
-import {Coverage, ChangedFilesCoverage} from '../src/types'
+import {ChangedFilesCoverage, Coverage} from '../src/types'
 
 describe('Render functions', () => {
   test('render emoji', () => {
     expect(renderEmoji(0.8, 0.7)).toBe(':white_check_mark:|')
     expect(renderEmoji(0.8, 0.8)).toBe(':white_check_mark:|')
-    expect(renderEmoji(0.8, 0.9)).toBe(':x:|')
+    expect(renderEmoji(0.8, 0.9)).toBe(':hankey:|')
   })
 
   test('create comment with title', () => {
@@ -18,7 +18,7 @@ describe('Render functions', () => {
           missed: 7,
           covered: 10,
           percentage: 65.5,
-          filePath: 'Details.kt',
+          filePath: 'path/to/file/Details.kt',
           url: 'file-url'
         }
       ]
@@ -31,9 +31,15 @@ describe('Render functions', () => {
       70.0
     )
 
-    expect(comment).toBe(
-      `### Code Coverage\n|File|Coverage [65.50%]|:x:|\n|:-|:-:|:-:|\n|[Details.kt](file-url)|65.50%|:x:|\n\n|Total Project Coverage|70.20%|:white_check_mark:|\n|:-|:-:|:-:|`
-    )
+    const expectedComment = `### Code Coverage
+|File|Coverage [65.50%]|:-:|
+|:-|:-:|:-:|
+|[Details.kt](file-url)|65.50%|:hankey:|
+
+|Total Project Coverage|70.20%|:white_check_mark:|
+|:-|:-:|:-:|`
+
+    expect(comment).toBe(expectedComment)
   })
 
   test('create comment with min coverage values', () => {
@@ -58,9 +64,13 @@ describe('Render functions', () => {
       70.0
     )
 
-    expect(comment).toBe(
-      `|File|Coverage [65.50%]|:x:|\n|:-|:-:|:-:|\n|[Details.kt](file-url)|65.50%|:x:|\n\n|Total Project Coverage|70.20%|:white_check_mark:|\n|:-|:-:|:-:|`
-    )
+    const expectedComment = `|File|Coverage [65.50%]|:-:|
+|:-|:-:|:-:|
+|[Details.kt](file-url)|65.50%|:hankey:|
+
+|Total Project Coverage|70.20%|:white_check_mark:|
+|:-|:-:|:-:|`
+    expect(comment).toBe(expectedComment)
   })
 
   test('create comment without min coverage values', () => {
