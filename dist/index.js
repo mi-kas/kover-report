@@ -20,7 +20,8 @@ exports.getChangedFiles = exports.addComment = exports.getDetails = exports.run 
 const render_1 = __nccwpck_require__(9089);
 const reader_1 = __nccwpck_require__(7433);
 const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
-    const path = core.getInput('path', { required: true });
+    var _a, _b, _c;
+    const paths = core.getMultilineInput('path', { required: true });
     const token = core.getInput('token', { required: true });
     const titleInput = core.getInput('title', { required: false });
     const title = titleInput !== '' ? titleInput : undefined;
@@ -44,20 +45,43 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
-    const details = (0, exports.getDetails)(event, github.context.payload);
-    const report = yield (0, reader_1.parseReport)(path);
-    if (!report) {
-        throw Error('No kover report detected');
+    if (paths.length === 0) {
+        throw Error('At least one path must be provided');
     }
-    const overallCoverage = (0, reader_1.getOverallCoverage)(report, counterType);
+    const details = (0, exports.getDetails)(event, github.context.payload);
+    const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
+    const overallCoverage = {
+        missed: 0,
+        covered: 0,
+        percentage: 0
+    };
+    const overallFilesCoverage = {
+        percentage: 0,
+        files: []
+    };
+    const totalReports = paths.length;
+    for (const path of paths) {
+        const report = yield (0, reader_1.parseReport)(path);
+        if (!report) {
+            throw Error(`No Kover report detected in path ${path}`);
+        }
+        const reportsCoverage = (0, reader_1.getOverallCoverage)(report, counterType);
+        overallCoverage.missed += (_a = reportsCoverage === null || reportsCoverage === void 0 ? void 0 : reportsCoverage.missed) !== null && _a !== void 0 ? _a : 0;
+        overallCoverage.covered += (_b = reportsCoverage === null || reportsCoverage === void 0 ? void 0 : reportsCoverage.covered) !== null && _b !== void 0 ? _b : 0;
+        overallCoverage.percentage += (_c = reportsCoverage === null || reportsCoverage === void 0 ? void 0 : reportsCoverage.percentage) !== null && _c !== void 0 ? _c : 0;
+        const reportsFilesCovered = (0, reader_1.getFileCoverage)(report, changedFiles, counterType);
+        overallFilesCoverage.percentage += reportsFilesCovered.percentage;
+        overallFilesCoverage.files = overallFilesCoverage.files.concat(reportsFilesCovered.files);
+    }
+    overallCoverage.percentage = overallCoverage.percentage / totalReports;
+    overallFilesCoverage.percentage =
+        overallFilesCoverage.percentage / totalReports;
     if (!overallCoverage) {
         throw Error('No project coverage detected');
     }
     core.setOutput('coverage-overall', overallCoverage.percentage);
-    const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
-    const filesCoverage = (0, reader_1.getFileCoverage)(report, changedFiles, counterType);
-    core.setOutput('coverage-changed-files', filesCoverage.percentage);
-    const comment = (0, render_1.createComment)(title, overallCoverage, filesCoverage, minCoverageOverall, minCoverageChangedFiles);
+    core.setOutput('coverage-changed-files', overallFilesCoverage.percentage);
+    const comment = (0, render_1.createComment)(title, overallCoverage, overallFilesCoverage, minCoverageOverall, minCoverageChangedFiles);
     if (details.prNumber != null) {
         yield (0, exports.addComment)(details.prNumber, title, comment, updateComment, octokit, github.context.repo);
     }
@@ -100,13 +124,13 @@ const addComment = (prNumber, title, body, updateComment, client, repo) => __awa
 });
 exports.addComment = addComment;
 const getChangedFiles = (base, head, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
+    var _d, _e;
     const response = yield client.rest.repos.compareCommits(Object.assign({ base,
         head }, repo));
-    return ((_b = (_a = response.data.files) === null || _a === void 0 ? void 0 : _a.map(file => ({
+    return ((_e = (_d = response.data.files) === null || _d === void 0 ? void 0 : _d.map(file => ({
         filePath: file.filename,
         url: file.blob_url
-    }))) !== null && _b !== void 0 ? _b : []);
+    }))) !== null && _e !== void 0 ? _e : []);
 });
 exports.getChangedFiles = getChangedFiles;
 

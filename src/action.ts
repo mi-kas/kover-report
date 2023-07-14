@@ -1,14 +1,19 @@
 import * as actionsCore from '@actions/core'
 import * as actionsGithub from '@actions/github'
 import {createComment} from './render'
-import {parseReport, getOverallCoverage, getFileCoverage} from './reader'
-import {ChangedFile, CounterType} from './types.d'
+import {getFileCoverage, getOverallCoverage, parseReport} from './reader'
+import {
+  ChangedFile,
+  ChangedFilesCoverage,
+  CounterType,
+  Coverage
+} from './types.d'
 
 export const run = async (
   core: typeof actionsCore,
   github: typeof actionsGithub
 ): Promise<void> => {
-  const path = core.getInput('path', {required: true})
+  const paths: string[] = core.getMultilineInput('path', {required: true})
   const token = core.getInput('token', {required: true})
   const titleInput = core.getInput('title', {required: false})
   const title = titleInput !== '' ? titleInput : undefined
@@ -42,18 +47,11 @@ export const run = async (
   const event = github.context.eventName
   core.info(`Event is ${event}`)
 
+  if (paths.length === 0) {
+    throw Error('At least one path must be provided')
+  }
+
   const details = getDetails(event, github.context.payload)
-
-  const report = await parseReport(path)
-  if (!report) {
-    throw Error('No kover report detected')
-  }
-
-  const overallCoverage = getOverallCoverage(report, counterType)
-  if (!overallCoverage) {
-    throw Error('No project coverage detected')
-  }
-  core.setOutput('coverage-overall', overallCoverage.percentage)
 
   const changedFiles = await getChangedFiles(
     details.base,
@@ -61,13 +59,54 @@ export const run = async (
     octokit,
     github.context.repo
   )
-  const filesCoverage = getFileCoverage(report, changedFiles, counterType)
-  core.setOutput('coverage-changed-files', filesCoverage.percentage)
+
+  const overallCoverage: Coverage = {
+    missed: 0,
+    covered: 0,
+    percentage: 0
+  }
+  const overallFilesCoverage: ChangedFilesCoverage = {
+    percentage: 0,
+    files: []
+  }
+
+  const totalReports = paths.length
+  for (const path of paths) {
+    const report = await parseReport(path)
+    if (!report) {
+      throw Error(`No Kover report detected in path ${path}`)
+    }
+
+    const reportsCoverage = getOverallCoverage(report, counterType)
+    overallCoverage.missed += reportsCoverage?.missed ?? 0
+    overallCoverage.covered += reportsCoverage?.covered ?? 0
+    overallCoverage.percentage += reportsCoverage?.percentage ?? 0
+
+    const reportsFilesCovered = getFileCoverage(
+      report,
+      changedFiles,
+      counterType
+    )
+    overallFilesCoverage.percentage += reportsFilesCovered.percentage
+    overallFilesCoverage.files = overallFilesCoverage.files.concat(
+      reportsFilesCovered.files
+    )
+  }
+
+  overallCoverage.percentage = overallCoverage.percentage / totalReports
+  overallFilesCoverage.percentage =
+    overallFilesCoverage.percentage / totalReports
+
+  if (!overallCoverage) {
+    throw Error('No project coverage detected')
+  }
+  core.setOutput('coverage-overall', overallCoverage.percentage)
+  core.setOutput('coverage-changed-files', overallFilesCoverage.percentage)
 
   const comment = createComment(
     title,
     overallCoverage,
-    filesCoverage,
+    overallFilesCoverage,
     minCoverageOverall,
     minCoverageChangedFiles
   )
