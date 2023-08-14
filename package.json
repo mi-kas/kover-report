@@ -36,7 +36,7 @@
   "devDependencies": {
     "@types/node": "^20.4.8",
     "@types/xml2js": "^0.4.11",
-    "@typescript-eslint/parser": "^6.3.0",
+    "@typescript-eslint/parser": "^6.4.0",
     "@vercel/ncc": "^0.36.1",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.0.0",
