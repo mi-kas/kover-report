@@ -1,6 +1,9 @@
 inputs:
   path:
-    type: string
+    type: list
+    separator: '\n'
+    list-item:
+      type: string
   token:
     type: string
   title:
