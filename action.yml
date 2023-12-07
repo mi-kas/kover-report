@@ -6,8 +6,9 @@ inputs:
     required: true
     description: 'Path to the generated kover report xml file'
   token:
-    required: true
+    required: false
     description: 'Github personal token to add commits to the pull request'
+    default: ${{ github.token }}
   title:
     required: false
     description: 'Title for the pull request comment'
