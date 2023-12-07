@@ -13,7 +13,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 ### Inputs
 
 - `path` - [**required** string[]] List of paths to the generated kover report xml files
-- `token` - [**required** string] Github personal token to add commits to the pull request
+- `token` - [*optional* string] GitHub personal token to add commits to the pull request
 - `title` - [*optional* string] Title for the pull request comment
 - `update-comment` - [*optional* boolean (default: `false`)] Update the coverage report comment instead of creating a new one. Requires `title` to be set.
 - `min-coverage-overall` - [*optional* integer] The minimum code coverage that is required to pass for overall project
@@ -54,7 +54,6 @@ jobs:
           path: |
             ${{ github.workspace }}/project1/build/reports/kover/report.xml
             ${{ github.workspace }}/project2/build/reports/kover/report.xml
-          token: ${{ secrets.GITHUB_TOKEN }}
           title: Code Coverage
           update-comment: true
           min-coverage-overall: 80
