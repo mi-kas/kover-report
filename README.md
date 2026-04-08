@@ -12,7 +12,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 
 ### Inputs
 
-- `path` - [**required** string[]] List of paths to the generated kover report xml files
+  - `path` - [**required** string[]] List of paths or glob patterns to the generated kover report xml files
 - `token` - [*optional* string] GitHub personal token to add commits to the pull request
 - `title` - [*optional* string] Title for the pull request comment
 - `update-comment` - [*optional* boolean (default: `false`)] Update the coverage report comment instead of creating a new one. Requires `title` to be set.
@@ -64,6 +64,18 @@ jobs:
           min-coverage-changed-files: 80
           coverage-counter-type: LINE
 ```
+
+Glob patterns are also supported for `path`, for example:
+
+```yaml
+          path: |
+            ${{ github.workspace }}/**/reports/kover/report.xml
+```
+
+Each `path` entry is resolved independently. If a glob matches multiple XML
+files, all of them are included in the report. If an entry does not match
+anything, it is still treated as a literal path so the action keeps the
+existing missing-file behavior instead of silently skipping it.
 
 <br>
 <img src="/screenshot.png" alt="output screenshot" title="output screenshot" width="500" />

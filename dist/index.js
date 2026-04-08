@@ -38,6 +38,7 @@ const run = async (core, github) => {
     if (paths.length === 0) {
         throw Error('At least one path must be provided');
     }
+    const reportPaths = (0, reader_1.resolveReportPaths)(paths);
     const details = (0, exports.getDetails)(event, github.context.payload);
     const changedFiles = await (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
     const overallCoverage = {
@@ -49,8 +50,8 @@ const run = async (core, github) => {
         percentage: 0,
         files: []
     };
-    const totalReports = paths.length;
-    for (const path of paths) {
+    const totalReports = reportPaths.length;
+    for (const path of reportPaths) {
         const report = await (0, reader_1.parseReport)(path);
         if (!report) {
             throw Error(`No Kover report detected in path ${path}`);
@@ -229,9 +230,15 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getTotalPercentage = exports.getFileCoverage = exports.getOverallCoverage = exports.getCoverageFromCounters = exports.parseReport = void 0;
+exports.getTotalPercentage = exports.getFileCoverage = exports.getOverallCoverage = exports.getCoverageFromCounters = exports.parseReport = exports.resolveReportPaths = void 0;
 const fs = __importStar(__nccwpck_require__(9896));
 const parser = __importStar(__nccwpck_require__(758));
+const resolveReportPaths = (paths) => paths.flatMap(path => {
+    const resolvedPath = path.trim();
+    const matches = fs.globSync(resolvedPath);
+    return matches.length > 0 ? matches : [resolvedPath];
+});
+exports.resolveReportPaths = resolveReportPaths;
 const parseReport = async (path) => {
     const reportXml = await fs.promises.readFile(path.trim(), 'utf-8');
     return parser.parseStringPromise(reportXml);
