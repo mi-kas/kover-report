@@ -27,6 +27,33 @@ describe('Reader functions', () => {
     expect(report).toMatchObject(sampleReport as Record<string, any>)
   })
 
+  test('parse branchless report from xml file', async () => {
+    const report = await parseReport('./tests/examples/report_branchless.xml')
+    expect(getOverallCoverage(report!, 'BRANCH')).toMatchObject({
+      missed: 0,
+      covered: 0,
+      percentage: 100
+    })
+    expect(
+      getFileCoverage(
+        report!,
+        [{filePath: 'pkg/Foo.kt', url: 'file-url-foo'}],
+        'BRANCH'
+      )
+    ).toMatchObject({
+      files: [
+        {
+          filePath: 'pkg/Foo.kt',
+          url: 'file-url-foo',
+          missed: 0,
+          covered: 0,
+          percentage: 100
+        }
+      ],
+      percentage: 100
+    })
+  })
+
   test('get coverage from line counters', () => {
     const coverage = getCoverageFromCounters(
       sampleReport.report.counter!,
@@ -218,49 +245,5 @@ describe('Reader functions', () => {
     ]
     const coverage = getFileCoverage(sampleReport, changedFiles, 'LINE')
     expect(coverage).toMatchObject({files: [], percentage: 100.0})
-  })
-
-  test('get changed files coverage for branchless files', () => {
-    const changedFiles: ChangedFile[] = [
-      {
-        filePath: 'pkg/Foo.kt',
-        url: 'file-url-foo'
-      }
-    ]
-    const report: Report = {
-      ...sampleReport,
-      report: {
-        ...sampleReport.report,
-        package: [
-          {
-            $: {name: 'pkg'},
-            class: [],
-            sourcefile: [
-              {
-                $: {name: 'Foo.kt'},
-                line: [],
-                counter: [{$: {type: 'BRANCH', missed: '0', covered: '0'}}]
-              }
-            ],
-            counter: [{$: {type: 'BRANCH', missed: '0', covered: '0'}}]
-          }
-        ]
-      }
-    }
-
-    const coverage = getFileCoverage(report, changedFiles, 'BRANCH')
-
-    expect(coverage).toMatchObject({
-      files: [
-        {
-          filePath: 'pkg/Foo.kt',
-          url: 'file-url-foo',
-          missed: 0,
-          covered: 0,
-          percentage: 100
-        }
-      ],
-      percentage: 100
-    })
   })
 })
