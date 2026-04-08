@@ -1,13 +1,13 @@
 import * as fs from 'fs'
 import * as parser from 'xml2js'
-import {
-  Report,
-  Counter,
-  Coverage,
+import type {
   ChangedFile,
   ChangedFilesCoverage,
   ChangedFileWithCoverage,
-  CounterType
+  Counter,
+  CounterType,
+  Coverage,
+  Report
 } from './types.d'
 
 export const parseReport = async (path: string): Promise<Report | null> => {
@@ -24,13 +24,15 @@ export const getCoverageFromCounters = (
   )?.['$']
   if (!lineCounter) return null
 
-  const missed = parseFloat(lineCounter.missed)
-  const covered = parseFloat(lineCounter.covered)
+  const missed = Number.parseFloat(lineCounter.missed)
+  const covered = Number.parseFloat(lineCounter.covered)
 
   return {
     missed,
     covered,
-    percentage: parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
+    percentage: Number.parseFloat(
+      ((covered / (covered + missed)) * 100).toFixed(2)
+    )
   }
 }
 
@@ -49,7 +51,7 @@ export const getFileCoverage = (
 ): ChangedFilesCoverage => {
   const filesWithCoverage = files.reduce<ChangedFileWithCoverage[]>(
     (acc, file) => {
-      report.report?.package?.map(item => {
+      report.report?.package?.forEach(item => {
         const packageName = item['$'].name
         const sourceFile = item.sourcefile.find(sf => {
           const sourceFileName = sf['$'].name
@@ -87,7 +89,7 @@ export const getTotalPercentage = (
     {missed: 0, covered: 0}
   )
 
-  return parseFloat(
+  return Number.parseFloat(
     ((result.covered / (result.covered + result.missed)) * 100).toFixed(2)
   )
 }

@@ -1,8 +1,8 @@
-import * as actionsCore from '@actions/core'
-import * as actionsGithub from '@actions/github'
-import {createComment} from './render'
+import type * as actionsCore from '@actions/core'
+import type * as actionsGithub from '@actions/github'
 import {getFileCoverage, getOverallCoverage, parseReport} from './reader'
-import {
+import {createComment} from './render'
+import type {
   ChangedFile,
   ChangedFilesCoverage,
   CounterType,
@@ -24,7 +24,7 @@ export const run = async (
   })
   const minCoverageOverall =
     minCoverageOverallInput !== ''
-      ? parseFloat(minCoverageOverallInput)
+      ? Number.parseFloat(minCoverageOverallInput)
       : undefined
   const minCoverageChangedFilesInput = core.getInput(
     'min-coverage-changed-files',
@@ -34,7 +34,7 @@ export const run = async (
   )
   const minCoverageChangedFiles =
     minCoverageChangedFilesInput !== ''
-      ? parseFloat(minCoverageChangedFilesInput)
+      ? Number.parseFloat(minCoverageChangedFilesInput)
       : undefined
   const counterTypeInput = core.getInput('coverage-counter-type', {
     required: false

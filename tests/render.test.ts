@@ -1,6 +1,6 @@
-import {describe, test, expect} from '@jest/globals'
+import {describe, expect, test} from '@jest/globals'
 import {createComment, renderEmoji} from '../src/render'
-import {Coverage, ChangedFilesCoverage} from '../src/types'
+import type {ChangedFilesCoverage, Coverage} from '../src/types'
 
 describe('Render functions', () => {
   test('render emoji', () => {
