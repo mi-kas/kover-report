@@ -60,12 +60,11 @@ const run = async (core, github) => {
         overallCoverage.covered += reportsCoverage?.covered ?? 0;
         overallCoverage.percentage += reportsCoverage?.percentage ?? 0;
         const reportsFilesCovered = (0, reader_1.getFileCoverage)(report, changedFiles, counterType);
-        overallFilesCoverage.percentage += reportsFilesCovered.percentage;
         overallFilesCoverage.files = overallFilesCoverage.files.concat(reportsFilesCovered.files);
     }
     overallCoverage.percentage = overallCoverage.percentage / totalReports;
     overallFilesCoverage.percentage =
-        overallFilesCoverage.percentage / totalReports;
+        (0, reader_1.getTotalPercentage)(overallFilesCoverage.files) ?? 0;
     if (!overallCoverage) {
         throw Error('No project coverage detected');
     }

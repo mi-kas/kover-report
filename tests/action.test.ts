@@ -1,7 +1,79 @@
 import {describe, expect, test, vi} from 'vitest'
-import {addComment, getChangedFiles, getDetails} from '../src/action'
+import {addComment, getChangedFiles, getDetails, run} from '../src/action'
 
 describe('Action functions', () => {
+  test('run ignores modules without matching changed files', async () => {
+    const compareCommitsMock = vi.fn(() =>
+      Promise.resolve({
+        data: {
+          files: [{filename: 'pkg/Foo.kt', blob_url: 'foo-url'}]
+        }
+      })
+    )
+    const createIssueCommentMock = vi.fn(() => Promise.resolve({}))
+    const setOutputMock = vi.fn()
+    const core = {
+      getMultilineInput: vi.fn(() => [
+        './tests/examples/multi_module_a.xml',
+        './tests/examples/multi_module_b.xml'
+      ]),
+      getInput: vi.fn((name: string) => {
+        const inputs: Record<string, string> = {
+          token: 'token',
+          title: '',
+          'update-comment': 'false',
+          'min-coverage-overall': '',
+          'min-coverage-changed-files': '',
+          'coverage-counter-type': ''
+        }
+        return inputs[name] ?? ''
+      }),
+      info: vi.fn(),
+      setOutput: setOutputMock
+    } as any
+    const github = {
+      getOctokit: vi.fn(() => ({
+        rest: {
+          repos: {
+            compareCommits: compareCommitsMock
+          },
+          issues: {
+            createComment: createIssueCommentMock
+          }
+        }
+      })),
+      context: {
+        eventName: 'pull_request',
+        payload: {
+          pull_request: {
+            number: 12,
+            base: {sha: 'base_sha'},
+            head: {sha: 'head_sha'}
+          }
+        },
+        repo: {
+          owner: 'owner',
+          repo: 'repo'
+        }
+      }
+    } as any
+
+    await run(core, github)
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'coverage-overall', 42.5)
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      2,
+      'coverage-changed-files',
+      75
+    )
+    expect(createIssueCommentMock).toHaveBeenCalledWith({
+      issue_number: 12,
+      body: `|File|Coverage [75.00%]|\n|:-|:-:|\n|[pkg/Foo.kt](foo-url)|75.00%|\n\n|Total Project Coverage|42.50%|\n|:-|:-:|`,
+      owner: 'owner',
+      repo: 'repo'
+    })
+  })
+
   test('get changed files from context', async () => {
     const compareCommitsMock = vi.fn(() =>
       Promise.resolve({
