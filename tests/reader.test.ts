@@ -71,6 +71,18 @@ describe('Reader functions', () => {
     expect(coverage).toBeNull()
   })
 
+  test('get coverage from zero-total counters returns 100 percent', () => {
+    const coverage = getCoverageFromCounters(
+      [{$: {type: 'BRANCH', missed: '0', covered: '0'}}],
+      'BRANCH'
+    )
+    expect(coverage).toMatchObject({
+      missed: 0,
+      covered: 0,
+      percentage: 100
+    })
+  })
+
   test('get overall coverage from report', () => {
     const coverage = getOverallCoverage(sampleReport, 'LINE')
     expect(coverage).toMatchObject({
@@ -206,5 +218,49 @@ describe('Reader functions', () => {
     ]
     const coverage = getFileCoverage(sampleReport, changedFiles, 'LINE')
     expect(coverage).toMatchObject({files: [], percentage: 100.0})
+  })
+
+  test('get changed files coverage for branchless files', () => {
+    const changedFiles: ChangedFile[] = [
+      {
+        filePath: 'pkg/Foo.kt',
+        url: 'file-url-foo'
+      }
+    ]
+    const report: Report = {
+      ...sampleReport,
+      report: {
+        ...sampleReport.report,
+        package: [
+          {
+            $: {name: 'pkg'},
+            class: [],
+            sourcefile: [
+              {
+                $: {name: 'Foo.kt'},
+                line: [],
+                counter: [{$: {type: 'BRANCH', missed: '0', covered: '0'}}]
+              }
+            ],
+            counter: [{$: {type: 'BRANCH', missed: '0', covered: '0'}}]
+          }
+        ]
+      }
+    }
+
+    const coverage = getFileCoverage(report, changedFiles, 'BRANCH')
+
+    expect(coverage).toMatchObject({
+      files: [
+        {
+          filePath: 'pkg/Foo.kt',
+          url: 'file-url-foo',
+          missed: 0,
+          covered: 0,
+          percentage: 100
+        }
+      ],
+      percentage: 100
+    })
   })
 })

@@ -243,10 +243,11 @@ const getCoverageFromCounters = (counters, counterType) => {
         return null;
     const missed = Number.parseFloat(lineCounter.missed);
     const covered = Number.parseFloat(lineCounter.covered);
+    const total = covered + missed;
     return {
         missed,
         covered,
-        percentage: Number.parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
+        percentage: Number.parseFloat((total === 0 ? 100 : (covered / total) * 100).toFixed(2))
     };
 };
 exports.getCoverageFromCounters = getCoverageFromCounters;
@@ -285,7 +286,8 @@ const getTotalPercentage = (files) => {
         missed: acc.missed + file.missed,
         covered: acc.covered + file.covered
     }), { missed: 0, covered: 0 });
-    return Number.parseFloat(((result.covered / (result.covered + result.missed)) * 100).toFixed(2));
+    const total = result.covered + result.missed;
+    return Number.parseFloat((total === 0 ? 100 : (result.covered / total) * 100).toFixed(2));
 };
 exports.getTotalPercentage = getTotalPercentage;
 
