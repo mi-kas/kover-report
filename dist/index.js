@@ -2,25 +2,15 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 9139:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getChangedFiles = exports.addComment = exports.getDetails = exports.run = void 0;
 const render_1 = __nccwpck_require__(9089);
 const reader_1 = __nccwpck_require__(7433);
-const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+const run = async (core, github) => {
     const paths = core.getMultilineInput('path', { required: true });
     const token = core.getInput('token', { required: true });
     const titleInput = core.getInput('title', { required: false });
@@ -49,7 +39,7 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
         throw Error('At least one path must be provided');
     }
     const details = (0, exports.getDetails)(event, github.context.payload);
-    const changedFiles = yield (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
+    const changedFiles = await (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
     const overallCoverage = {
         missed: 0,
         covered: 0,
@@ -61,14 +51,14 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     };
     const totalReports = paths.length;
     for (const path of paths) {
-        const report = yield (0, reader_1.parseReport)(path);
+        const report = await (0, reader_1.parseReport)(path);
         if (!report) {
             throw Error(`No Kover report detected in path ${path}`);
         }
         const reportsCoverage = (0, reader_1.getOverallCoverage)(report, counterType);
-        overallCoverage.missed += (_a = reportsCoverage === null || reportsCoverage === void 0 ? void 0 : reportsCoverage.missed) !== null && _a !== void 0 ? _a : 0;
-        overallCoverage.covered += (_b = reportsCoverage === null || reportsCoverage === void 0 ? void 0 : reportsCoverage.covered) !== null && _b !== void 0 ? _b : 0;
-        overallCoverage.percentage += (_c = reportsCoverage === null || reportsCoverage === void 0 ? void 0 : reportsCoverage.percentage) !== null && _c !== void 0 ? _c : 0;
+        overallCoverage.missed += reportsCoverage?.missed ?? 0;
+        overallCoverage.covered += reportsCoverage?.covered ?? 0;
+        overallCoverage.percentage += reportsCoverage?.percentage ?? 0;
         const reportsFilesCovered = (0, reader_1.getFileCoverage)(report, changedFiles, counterType);
         overallFilesCoverage.percentage += reportsFilesCovered.percentage;
         overallFilesCoverage.files = overallFilesCoverage.files.concat(reportsFilesCovered.files);
@@ -83,19 +73,18 @@ const run = (core, github) => __awaiter(void 0, void 0, void 0, function* () {
     core.setOutput('coverage-changed-files', overallFilesCoverage.percentage);
     const comment = (0, render_1.createComment)(title, overallCoverage, overallFilesCoverage, minCoverageOverall, minCoverageChangedFiles);
     if (details.prNumber != null) {
-        yield (0, exports.addComment)(details.prNumber, title, comment, updateComment, octokit, github.context.repo);
+        await (0, exports.addComment)(details.prNumber, title, comment, updateComment, octokit, github.context.repo);
     }
-});
+};
 exports.run = run;
 const getDetails = (event, payload) => {
-    var _a, _b, _c, _d;
     switch (event) {
         case 'pull_request':
         case 'pull_request_target':
             return {
-                prNumber: (_b = (_a = payload.pull_request) === null || _a === void 0 ? void 0 : _a.number) !== null && _b !== void 0 ? _b : null,
-                base: (_c = payload.pull_request) === null || _c === void 0 ? void 0 : _c.base.sha,
-                head: (_d = payload.pull_request) === null || _d === void 0 ? void 0 : _d.head.sha
+                prNumber: payload.pull_request?.number ?? null,
+                base: payload.pull_request?.base.sha,
+                head: payload.pull_request?.head.sha
             };
         case 'push':
             return {
@@ -108,30 +97,43 @@ const getDetails = (event, payload) => {
     }
 };
 exports.getDetails = getDetails;
-const addComment = (prNumber, title, body, updateComment, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
+const addComment = async (prNumber, title, body, updateComment, client, repo) => {
     let commentUpdated = false;
     if (title && updateComment) {
-        const comments = yield client.rest.issues.listComments(Object.assign({ issue_number: prNumber }, repo));
-        const comment = comments.data.find(c => { var _a, _b; return (_b = (_a = c.body) === null || _a === void 0 ? void 0 : _a.startsWith(`### ${title}`)) !== null && _b !== void 0 ? _b : false; });
+        const comments = await client.rest.issues.listComments({
+            issue_number: prNumber,
+            ...repo
+        });
+        const comment = comments.data.find(c => c.body?.startsWith(`### ${title}`) ?? false);
         if (comment) {
-            yield client.rest.issues.updateComment(Object.assign({ comment_id: comment.id, body }, repo));
+            await client.rest.issues.updateComment({
+                comment_id: comment.id,
+                body,
+                ...repo
+            });
             commentUpdated = true;
         }
     }
     if (!commentUpdated) {
-        yield client.rest.issues.createComment(Object.assign({ issue_number: prNumber, body }, repo));
+        await client.rest.issues.createComment({
+            issue_number: prNumber,
+            body,
+            ...repo
+        });
     }
-});
+};
 exports.addComment = addComment;
-const getChangedFiles = (base, head, client, repo) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d, _e;
-    const response = yield client.rest.repos.compareCommits(Object.assign({ base,
-        head }, repo));
-    return ((_e = (_d = response.data.files) === null || _d === void 0 ? void 0 : _d.map(file => ({
+const getChangedFiles = async (base, head, client, repo) => {
+    const response = await client.rest.repos.compareCommits({
+        base,
+        head,
+        ...repo
+    });
+    return (response.data.files?.map(file => ({
         filePath: file.filename,
         url: file.blob_url
-    }))) !== null && _e !== void 0 ? _e : []);
-});
+    })) ?? []);
+};
 exports.getChangedFiles = getChangedFiles;
 
 
@@ -158,13 +160,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
@@ -200,34 +212,34 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getTotalPercentage = exports.getFileCoverage = exports.getOverallCoverage = exports.getCoverageFromCounters = exports.parseReport = void 0;
 const fs = __importStar(__nccwpck_require__(7147));
 const parser = __importStar(__nccwpck_require__(6189));
-const parseReport = (path) => __awaiter(void 0, void 0, void 0, function* () {
-    const reportXml = yield fs.promises.readFile(path.trim(), 'utf-8');
+const parseReport = async (path) => {
+    const reportXml = await fs.promises.readFile(path.trim(), 'utf-8');
     return parser.parseStringPromise(reportXml);
-});
+};
 exports.parseReport = parseReport;
 const getCoverageFromCounters = (counters, counterType) => {
-    var _a;
-    const lineCounter = (_a = counters.find(counter => counter['$'].type === counterType)) === null || _a === void 0 ? void 0 : _a['$'];
+    const lineCounter = counters.find(counter => counter['$'].type === counterType)?.['$'];
     if (!lineCounter)
         return null;
     const missed = parseFloat(lineCounter.missed);
@@ -240,33 +252,30 @@ const getCoverageFromCounters = (counters, counterType) => {
 };
 exports.getCoverageFromCounters = getCoverageFromCounters;
 const getOverallCoverage = (report, counterType) => {
-    var _a;
-    if (!((_a = report.report) === null || _a === void 0 ? void 0 : _a.counter))
+    if (!report.report?.counter)
         return null;
     return (0, exports.getCoverageFromCounters)(report.report.counter, counterType);
 };
 exports.getOverallCoverage = getOverallCoverage;
 const getFileCoverage = (report, files, counterType) => {
-    var _a;
     const filesWithCoverage = files.reduce((acc, file) => {
-        var _a, _b;
-        (_b = (_a = report.report) === null || _a === void 0 ? void 0 : _a.package) === null || _b === void 0 ? void 0 : _b.map(item => {
+        report.report?.package?.map(item => {
             const packageName = item['$'].name;
             const sourceFile = item.sourcefile.find(sf => {
                 const sourceFileName = sf['$'].name;
                 return file.filePath.endsWith(`${packageName}/${sourceFileName}`);
             });
-            if (sourceFile === null || sourceFile === void 0 ? void 0 : sourceFile.counter) {
+            if (sourceFile?.counter) {
                 const coverage = (0, exports.getCoverageFromCounters)(sourceFile.counter, counterType);
                 if (coverage)
-                    acc.push(Object.assign(Object.assign({}, file), coverage));
+                    acc.push({ ...file, ...coverage });
             }
         });
         return acc;
     }, []);
     return {
         files: filesWithCoverage,
-        percentage: (_a = (0, exports.getTotalPercentage)(filesWithCoverage)) !== null && _a !== void 0 ? _a : 100
+        percentage: (0, exports.getTotalPercentage)(filesWithCoverage) ?? 100
     };
 };
 exports.getFileCoverage = getFileCoverage;
