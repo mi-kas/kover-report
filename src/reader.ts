@@ -26,12 +26,13 @@ export const getCoverageFromCounters = (
 
   const missed = Number.parseFloat(lineCounter.missed)
   const covered = Number.parseFloat(lineCounter.covered)
+  const total = covered + missed
 
   return {
     missed,
     covered,
     percentage: Number.parseFloat(
-      ((covered / (covered + missed)) * 100).toFixed(2)
+      (total === 0 ? 100 : (covered / total) * 100).toFixed(2)
     )
   }
 }
@@ -88,8 +89,9 @@ export const getTotalPercentage = (
     }),
     {missed: 0, covered: 0}
   )
+  const total = result.covered + result.missed
 
   return Number.parseFloat(
-    ((result.covered / (result.covered + result.missed)) * 100).toFixed(2)
+    (total === 0 ? 100 : (result.covered / total) * 100).toFixed(2)
   )
 }

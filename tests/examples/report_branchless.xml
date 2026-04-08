@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<report name="Intellij Coverage Report">
+<package name="pkg">
+<class name="pkg/Foo" sourcefilename="Foo.kt">
+<method name="&lt;init&gt;" desc="()V" line="1">
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+<counter type="CLASS" missed="0" covered="1"/>
+</class>
+<sourcefile name="Foo.kt">
+<line nr="1" mi="0" ci="3" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+<counter type="CLASS" missed="0" covered="1"/>
+</sourcefile>
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+<counter type="CLASS" missed="0" covered="1"/>
+</package>
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+<counter type="CLASS" missed="0" covered="1"/>
+</report>
