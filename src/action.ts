@@ -1,6 +1,11 @@
 import type * as actionsCore from '@actions/core'
 import type * as actionsGithub from '@actions/github'
-import {getFileCoverage, getOverallCoverage, parseReport} from './reader'
+import {
+  getFileCoverage,
+  getOverallCoverage,
+  getTotalPercentage,
+  parseReport
+} from './reader'
 import {createComment} from './render'
 import type {
   ChangedFile,
@@ -87,7 +92,6 @@ export const run = async (
       changedFiles,
       counterType
     )
-    overallFilesCoverage.percentage += reportsFilesCovered.percentage
     overallFilesCoverage.files = overallFilesCoverage.files.concat(
       reportsFilesCovered.files
     )
@@ -95,7 +99,7 @@ export const run = async (
 
   overallCoverage.percentage = overallCoverage.percentage / totalReports
   overallFilesCoverage.percentage =
-    overallFilesCoverage.percentage / totalReports
+    getTotalPercentage(overallFilesCoverage.files) ?? 0
 
   if (!overallCoverage) {
     throw Error('No project coverage detected')
