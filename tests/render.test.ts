@@ -1,4 +1,4 @@
-import {describe, expect, test} from '@jest/globals'
+import {describe, expect, test} from 'vitest'
 import {createComment, renderEmoji} from '../src/render'
 import type {ChangedFilesCoverage, Coverage} from '../src/types'
 

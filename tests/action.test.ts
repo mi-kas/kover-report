@@ -1,9 +1,9 @@
-import {describe, expect, jest, test} from '@jest/globals'
+import {describe, expect, test, vi} from 'vitest'
 import {addComment, getChangedFiles, getDetails} from '../src/action'
 
 describe('Action functions', () => {
   test('get changed files from context', async () => {
-    const compareCommitsMock = jest.fn(() =>
+    const compareCommitsMock = vi.fn(() =>
       Promise.resolve({
         data: {
           files: [
@@ -39,7 +39,7 @@ describe('Action functions', () => {
   })
 
   test('get changed files from context returns null', async () => {
-    const compareCommitsMock = jest.fn(() =>
+    const compareCommitsMock = vi.fn(() =>
       Promise.resolve({
         data: {}
       })
@@ -130,7 +130,7 @@ describe('Action functions', () => {
   })
 
   test('add comment without title', async () => {
-    const createCommentMock = jest.fn(() => Promise.resolve({}))
+    const createCommentMock = vi.fn(() => Promise.resolve({}))
     const client = {
       rest: {
         issues: {
@@ -152,10 +152,10 @@ describe('Action functions', () => {
   })
 
   test('add comment with title updates existing comment', async () => {
-    const listCommentstMock = jest.fn(() =>
+    const listCommentstMock = vi.fn(() =>
       Promise.resolve({data: [{body: '### title xyz', id: '#8'}]})
     )
-    const updateCommentMock = jest.fn(() => Promise.resolve({}))
+    const updateCommentMock = vi.fn(() => Promise.resolve({}))
     const client = {
       rest: {
         issues: {
@@ -182,10 +182,10 @@ describe('Action functions', () => {
   })
 
   test('add comment with title creates new comment if no matching comment', async () => {
-    const listCommentstMock = jest.fn(() =>
+    const listCommentstMock = vi.fn(() =>
       Promise.resolve({data: [{body: '### header xyz', id: '#8'}]})
     )
-    const createCommentMock = jest.fn(() => Promise.resolve({}))
+    const createCommentMock = vi.fn(() => Promise.resolve({}))
     const client = {
       rest: {
         issues: {
@@ -212,7 +212,7 @@ describe('Action functions', () => {
   })
 
   test('add comment with title creates new comment', async () => {
-    const createCommentMock = jest.fn(() => Promise.resolve({}))
+    const createCommentMock = vi.fn(() => Promise.resolve({}))
     const client = {
       rest: {
         issues: {
