@@ -1,5 +1,5 @@
 import {getFileCoverage, parseReport} from './reader'
-import {ChangedFile} from './types.d'
+import type {ChangedFile} from './types.d'
 
 const run = async (): Promise<void> => {
   const report = await parseReport('./tests/examples/report_large.xml')

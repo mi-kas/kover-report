@@ -1,12 +1,12 @@
-import {describe, test, expect} from '@jest/globals'
+import {describe, expect, test} from '@jest/globals'
 import {
-  parseReport,
   getCoverageFromCounters,
+  getFileCoverage,
   getOverallCoverage,
   getTotalPercentage,
-  getFileCoverage
+  parseReport
 } from '../src/reader'
-import {Report, ChangedFileWithCoverage, ChangedFile} from '../src/types'
+import type {ChangedFile, ChangedFileWithCoverage, Report} from '../src/types'
 
 describe('Reader functions', () => {
   const sampleReport: Report = {
@@ -29,7 +29,7 @@ describe('Reader functions', () => {
 
   test('get coverage from line counters', () => {
     const coverage = getCoverageFromCounters(
-      sampleReport.report.counter!!,
+      sampleReport.report.counter!,
       'LINE'
     )
     expect(coverage).toMatchObject({
@@ -41,7 +41,7 @@ describe('Reader functions', () => {
 
   test('get coverage from branch counters', () => {
     const coverage = getCoverageFromCounters(
-      sampleReport.report.counter!!,
+      sampleReport.report.counter!,
       'BRANCH'
     )
     expect(coverage).toMatchObject({
@@ -53,7 +53,7 @@ describe('Reader functions', () => {
 
   test('get coverage from instruction counters', () => {
     const coverage = getCoverageFromCounters(
-      sampleReport.report.counter!!,
+      sampleReport.report.counter!,
       'INSTRUCTION'
     )
     expect(coverage).toMatchObject({
@@ -65,7 +65,7 @@ describe('Reader functions', () => {
 
   test('get coverage from counters returns null if no line counters', () => {
     const coverage = getCoverageFromCounters(
-      sampleReport.report.counter!!.filter(c => c.$.type !== 'LINE'),
+      sampleReport.report.counter!.filter(c => c.$.type !== 'LINE'),
       'LINE'
     )
     expect(coverage).toBeNull()

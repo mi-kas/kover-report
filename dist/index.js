@@ -8,8 +8,8 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getChangedFiles = exports.addComment = exports.getDetails = exports.run = void 0;
-const render_1 = __nccwpck_require__(9089);
 const reader_1 = __nccwpck_require__(7433);
+const render_1 = __nccwpck_require__(9089);
 const run = async (core, github) => {
     const paths = core.getMultilineInput('path', { required: true });
     const token = core.getInput('token', { required: true });
@@ -20,13 +20,13 @@ const run = async (core, github) => {
         required: false
     });
     const minCoverageOverall = minCoverageOverallInput !== ''
-        ? parseFloat(minCoverageOverallInput)
+        ? Number.parseFloat(minCoverageOverallInput)
         : undefined;
     const minCoverageChangedFilesInput = core.getInput('min-coverage-changed-files', {
         required: false
     });
     const minCoverageChangedFiles = minCoverageChangedFilesInput !== ''
-        ? parseFloat(minCoverageChangedFilesInput)
+        ? Number.parseFloat(minCoverageChangedFilesInput)
         : undefined;
     const counterTypeInput = core.getInput('coverage-counter-type', {
         required: false
@@ -242,12 +242,12 @@ const getCoverageFromCounters = (counters, counterType) => {
     const lineCounter = counters.find(counter => counter['$'].type === counterType)?.['$'];
     if (!lineCounter)
         return null;
-    const missed = parseFloat(lineCounter.missed);
-    const covered = parseFloat(lineCounter.covered);
+    const missed = Number.parseFloat(lineCounter.missed);
+    const covered = Number.parseFloat(lineCounter.covered);
     return {
         missed,
         covered,
-        percentage: parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
+        percentage: Number.parseFloat(((covered / (covered + missed)) * 100).toFixed(2))
     };
 };
 exports.getCoverageFromCounters = getCoverageFromCounters;
@@ -259,7 +259,7 @@ const getOverallCoverage = (report, counterType) => {
 exports.getOverallCoverage = getOverallCoverage;
 const getFileCoverage = (report, files, counterType) => {
     const filesWithCoverage = files.reduce((acc, file) => {
-        report.report?.package?.map(item => {
+        report.report?.package?.forEach(item => {
             const packageName = item['$'].name;
             const sourceFile = item.sourcefile.find(sf => {
                 const sourceFileName = sf['$'].name;
@@ -286,7 +286,7 @@ const getTotalPercentage = (files) => {
         missed: acc.missed + file.missed,
         covered: acc.covered + file.covered
     }), { missed: 0, covered: 0 });
-    return parseFloat(((result.covered / (result.covered + result.missed)) * 100).toFixed(2));
+    return Number.parseFloat(((result.covered / (result.covered + result.missed)) * 100).toFixed(2));
 };
 exports.getTotalPercentage = getTotalPercentage;
 

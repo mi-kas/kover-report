@@ -1,4 +1,4 @@
-import {Coverage, ChangedFilesCoverage} from './types.d'
+import type {ChangedFilesCoverage, Coverage} from './types.d'
 
 export const createComment = (
   title: string | undefined,
