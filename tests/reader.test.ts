@@ -4,7 +4,8 @@ import {
   getFileCoverage,
   getOverallCoverage,
   getTotalPercentage,
-  parseReport
+  parseReport,
+  resolveReportPaths
 } from '../src/reader'
 import type {ChangedFile, ChangedFileWithCoverage, Report} from '../src/types'
 
@@ -25,6 +26,21 @@ describe('Reader functions', () => {
   test('parse kover report from xml file', async () => {
     const report = await parseReport('./tests/examples/report.xml')
     expect(report).toMatchObject(sampleReport as Record<string, any>)
+  })
+
+  test('resolve report paths expands glob patterns', () => {
+    expect(
+      resolveReportPaths(['./tests/examples/multi_module_*.xml']).sort()
+    ).toEqual([
+      'tests/examples/multi_module_a.xml',
+      'tests/examples/multi_module_b.xml'
+    ])
+  })
+
+  test('resolve report paths preserves literal paths when glob has no matches', () => {
+    expect(resolveReportPaths(['./tests/examples/missing-report.xml'])).toEqual(
+      ['./tests/examples/missing-report.xml']
+    )
   })
 
   test('parse branchless report from xml file', async () => {

@@ -10,6 +10,14 @@ import type {
   Report
 } from './types.d'
 
+export const resolveReportPaths = (paths: string[]): string[] =>
+  paths.flatMap(path => {
+    const resolvedPath = path.trim()
+    const matches = fs.globSync(resolvedPath)
+
+    return matches.length > 0 ? matches : [resolvedPath]
+  })
+
 export const parseReport = async (path: string): Promise<Report | null> => {
   const reportXml = await fs.promises.readFile(path.trim(), 'utf-8')
   return parser.parseStringPromise(reportXml)

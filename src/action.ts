@@ -4,7 +4,8 @@ import {
   getFileCoverage,
   getOverallCoverage,
   getTotalPercentage,
-  parseReport
+  parseReport,
+  resolveReportPaths
 } from './reader'
 import {createComment} from './render'
 import type {
@@ -56,6 +57,8 @@ export const run = async (
     throw Error('At least one path must be provided')
   }
 
+  const reportPaths = resolveReportPaths(paths)
+
   const details = getDetails(event, github.context.payload)
 
   const changedFiles = await getChangedFiles(
@@ -75,8 +78,8 @@ export const run = async (
     files: []
   }
 
-  const totalReports = paths.length
-  for (const path of paths) {
+  const totalReports = reportPaths.length
+  for (const path of reportPaths) {
     const report = await parseReport(path)
     if (!report) {
       throw Error(`No Kover report detected in path ${path}`)

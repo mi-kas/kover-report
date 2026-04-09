@@ -4,7 +4,7 @@ description: 'Github action that publishes the Kover code coverage report as a c
 inputs:
   path:
     required: true
-    description: 'Path to the generated kover report xml file'
+    description: 'Path or glob pattern to the generated kover report xml file'
   token:
     required: false
     description: 'Github personal token to add commits to the pull request'
