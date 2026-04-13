@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/mi-kas/kover-report/actions/workflows/test.yml/badge.svg)](https://github.com/mi-kas/kover-report/actions/workflows/test.yml) [![GitHub License](https://img.shields.io/github/license/mi-kas/kover-report?label=License)](https://github.com/mi-kas/kover-report/blob/main/LICENSE) [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](code_of_conduct.md)
 
-A Github action that publishes the [Kover](https://github.com/Kotlin/kotlinx-kover) code coverage report as a comment in pull requests.
+A Github action that publishes the [Kover](https://github.com/Kotlin/kotlinx-kover) code coverage report as a comment in pull requests. The comment shows overall project coverage and per-file coverage for files changed in the compared commit range.
 
 ## Usage
 
@@ -81,6 +81,8 @@ existing missing-file behavior instead of silently skipping it.
 <img src="/screenshot.png" alt="output screenshot" title="output screenshot" width="500" />
 
 ## Limitations
+
+The pull request comment does not render every class or source file from the XML report. It only lists coverage for files detected as changed between the compared commits, alongside the total project coverage row.
 
 GitHub restricts the maximum permissions to read-only for personal access tokens for pull requests originating from a public forked repository (read more [here](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token)). This prevents the default configuration of this action from successfully posting the report as a PR comment when using it on public repositories with limited permissions for users to create branches and therefore requiring them to create pull requests from forks.
 
