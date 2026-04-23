@@ -60,7 +60,7 @@ describe('Action functions', () => {
 
     await run(core, github)
 
-    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'coverage-overall', 42.5)
+    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'coverage-overall', 28.57)
     expect(setOutputMock).toHaveBeenNthCalledWith(
       2,
       'coverage-changed-files',
@@ -68,7 +68,7 @@ describe('Action functions', () => {
     )
     expect(createIssueCommentMock).toHaveBeenCalledWith({
       issue_number: 12,
-      body: `|File|Coverage [75.00%]|\n|:-|:-:|\n|[pkg/Foo.kt](foo-url)|75.00%|\n\n|Total Project Coverage|42.50%|\n|:-|:-:|`,
+      body: `|File|Coverage [75.00%]|\n|:-|:-:|\n|[pkg/Foo.kt](foo-url)|75.00%|\n\n|Total Project Coverage|28.57%|\n|:-|:-:|`,
       owner: 'owner',
       repo: 'repo'
     })
@@ -129,7 +129,7 @@ describe('Action functions', () => {
 
     await run(core, github)
 
-    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'coverage-overall', 42.5)
+    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'coverage-overall', 28.57)
     expect(setOutputMock).toHaveBeenNthCalledWith(
       2,
       'coverage-changed-files',
@@ -137,7 +137,74 @@ describe('Action functions', () => {
     )
     expect(createIssueCommentMock).toHaveBeenCalledWith({
       issue_number: 12,
-      body: `|File|Coverage [75.00%]|\n|:-|:-:|\n|[pkg/Foo.kt](foo-url)|75.00%|\n\n|Total Project Coverage|42.50%|\n|:-|:-:|`,
+      body: `|File|Coverage [75.00%]|\n|:-|:-:|\n|[pkg/Foo.kt](foo-url)|75.00%|\n\n|Total Project Coverage|28.57%|\n|:-|:-:|`,
+      owner: 'owner',
+      repo: 'repo'
+    })
+  })
+
+  test('run calculates overall coverage from aggregated totals', async () => {
+    const compareCommitsMock = vi.fn(() =>
+      Promise.resolve({
+        data: {
+          files: [{filename: 'pkg/Foo.kt', blob_url: 'foo-url'}]
+        }
+      })
+    )
+    const createIssueCommentMock = vi.fn(() => Promise.resolve({}))
+    const setOutputMock = vi.fn()
+    const core = {
+      getMultilineInput: vi.fn(() => [
+        './tests/examples/multi_module_a.xml',
+        './tests/examples/multi_module_b.xml'
+      ]),
+      getInput: vi.fn((name: string) => {
+        const inputs: Record<string, string> = {
+          token: 'token',
+          title: '',
+          'update-comment': 'false',
+          'min-coverage-overall': '',
+          'min-coverage-changed-files': '',
+          'coverage-counter-type': ''
+        }
+        return inputs[name] ?? ''
+      }),
+      info: vi.fn(),
+      setOutput: setOutputMock
+    } as any
+    const github = {
+      getOctokit: vi.fn(() => ({
+        rest: {
+          repos: {
+            compareCommits: compareCommitsMock
+          },
+          issues: {
+            createComment: createIssueCommentMock
+          }
+        }
+      })),
+      context: {
+        eventName: 'pull_request',
+        payload: {
+          pull_request: {
+            number: 12,
+            base: {sha: 'base_sha'},
+            head: {sha: 'head_sha'}
+          }
+        },
+        repo: {
+          owner: 'owner',
+          repo: 'repo'
+        }
+      }
+    } as any
+
+    await run(core, github)
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'coverage-overall', 28.57)
+    expect(createIssueCommentMock).toHaveBeenCalledWith({
+      issue_number: 12,
+      body: `|File|Coverage [75.00%]|\n|:-|:-:|\n|[pkg/Foo.kt](foo-url)|75.00%|\n\n|Total Project Coverage|28.57%|\n|:-|:-:|`,
       owner: 'owner',
       repo: 'repo'
     })

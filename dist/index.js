@@ -50,7 +50,6 @@ const run = async (core, github) => {
         percentage: 0,
         files: []
     };
-    const totalReports = reportPaths.length;
     for (const path of reportPaths) {
         const report = await (0, reader_1.parseReport)(path);
         if (!report) {
@@ -59,11 +58,10 @@ const run = async (core, github) => {
         const reportsCoverage = (0, reader_1.getOverallCoverage)(report, counterType);
         overallCoverage.missed += reportsCoverage?.missed ?? 0;
         overallCoverage.covered += reportsCoverage?.covered ?? 0;
-        overallCoverage.percentage += reportsCoverage?.percentage ?? 0;
         const reportsFilesCovered = (0, reader_1.getFileCoverage)(report, changedFiles, counterType);
         overallFilesCoverage.files = overallFilesCoverage.files.concat(reportsFilesCovered.files);
     }
-    overallCoverage.percentage = overallCoverage.percentage / totalReports;
+    overallCoverage.percentage = (0, reader_1.getPercentage)(overallCoverage.covered, overallCoverage.missed);
     overallFilesCoverage.percentage =
         (0, reader_1.getTotalPercentage)(overallFilesCoverage.files) ?? 0;
     if (!overallCoverage) {
@@ -230,7 +228,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getTotalPercentage = exports.getFileCoverage = exports.getOverallCoverage = exports.getCoverageFromCounters = exports.parseReport = exports.resolveReportPaths = void 0;
+exports.getPercentage = exports.getTotalPercentage = exports.getFileCoverage = exports.getOverallCoverage = exports.getCoverageFromCounters = exports.parseReport = exports.resolveReportPaths = void 0;
 const fs = __importStar(__nccwpck_require__(9896));
 const parser = __importStar(__nccwpck_require__(758));
 const resolveReportPaths = (paths) => paths.flatMap(path => {
@@ -250,11 +248,10 @@ const getCoverageFromCounters = (counters, counterType) => {
         return null;
     const missed = Number.parseFloat(lineCounter.missed);
     const covered = Number.parseFloat(lineCounter.covered);
-    const total = covered + missed;
     return {
         missed,
         covered,
-        percentage: Number.parseFloat((total === 0 ? 100 : (covered / total) * 100).toFixed(2))
+        percentage: (0, exports.getPercentage)(covered, missed)
     };
 };
 exports.getCoverageFromCounters = getCoverageFromCounters;
@@ -293,10 +290,14 @@ const getTotalPercentage = (files) => {
         missed: acc.missed + file.missed,
         covered: acc.covered + file.covered
     }), { missed: 0, covered: 0 });
-    const total = result.covered + result.missed;
-    return Number.parseFloat((total === 0 ? 100 : (result.covered / total) * 100).toFixed(2));
+    return (0, exports.getPercentage)(result.covered, result.missed);
 };
 exports.getTotalPercentage = getTotalPercentage;
+const getPercentage = (covered, missed) => {
+    const total = covered + missed;
+    return Number.parseFloat((total === 0 ? 100 : (covered / total) * 100).toFixed(2));
+};
+exports.getPercentage = getPercentage;
 
 
 /***/ }),
