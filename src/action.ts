@@ -78,6 +78,7 @@ export const run = async (
     percentage: 0,
     files: []
   }
+  let hasOverallCoverage = false
 
   for (const path of reportPaths) {
     const report = await parseReport(path)
@@ -86,6 +87,9 @@ export const run = async (
     }
 
     const reportsCoverage = getOverallCoverage(report, counterType)
+    if (reportsCoverage) {
+      hasOverallCoverage = true
+    }
     overallCoverage.missed += reportsCoverage?.missed ?? 0
     overallCoverage.covered += reportsCoverage?.covered ?? 0
 
@@ -99,6 +103,9 @@ export const run = async (
     )
   }
 
+  if (!hasOverallCoverage) {
+    throw Error('No project coverage detected')
+  }
   overallCoverage.percentage = getPercentage(
     overallCoverage.covered,
     overallCoverage.missed
@@ -106,9 +113,6 @@ export const run = async (
   overallFilesCoverage.percentage =
     getTotalPercentage(overallFilesCoverage.files) ?? 0
 
-  if (!overallCoverage) {
-    throw Error('No project coverage detected')
-  }
   core.setOutput('coverage-overall', overallCoverage.percentage)
   core.setOutput('coverage-changed-files', overallFilesCoverage.percentage)
 

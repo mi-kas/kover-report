@@ -50,23 +50,27 @@ const run = async (core, github) => {
         percentage: 0,
         files: []
     };
+    let hasOverallCoverage = false;
     for (const path of reportPaths) {
         const report = await (0, reader_1.parseReport)(path);
         if (!report) {
             throw Error(`No Kover report detected in path ${path}`);
         }
         const reportsCoverage = (0, reader_1.getOverallCoverage)(report, counterType);
+        if (reportsCoverage) {
+            hasOverallCoverage = true;
+        }
         overallCoverage.missed += reportsCoverage?.missed ?? 0;
         overallCoverage.covered += reportsCoverage?.covered ?? 0;
         const reportsFilesCovered = (0, reader_1.getFileCoverage)(report, changedFiles, counterType);
         overallFilesCoverage.files = overallFilesCoverage.files.concat(reportsFilesCovered.files);
     }
+    if (!hasOverallCoverage) {
+        throw Error('No project coverage detected');
+    }
     overallCoverage.percentage = (0, reader_1.getPercentage)(overallCoverage.covered, overallCoverage.missed);
     overallFilesCoverage.percentage =
         (0, reader_1.getTotalPercentage)(overallFilesCoverage.files) ?? 0;
-    if (!overallCoverage) {
-        throw Error('No project coverage detected');
-    }
     core.setOutput('coverage-overall', overallCoverage.percentage);
     core.setOutput('coverage-changed-files', overallFilesCoverage.percentage);
     const comment = (0, render_1.createComment)(title, overallCoverage, overallFilesCoverage, minCoverageOverall, minCoverageChangedFiles);

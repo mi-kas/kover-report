@@ -210,6 +210,66 @@ describe('Action functions', () => {
     })
   })
 
+  test('run throws when no report contains the selected overall counter', async () => {
+    const compareCommitsMock = vi.fn(() =>
+      Promise.resolve({
+        data: {
+          files: [{filename: 'pkg/Foo.kt', blob_url: 'foo-url'}]
+        }
+      })
+    )
+    const createIssueCommentMock = vi.fn(() => Promise.resolve({}))
+    const setOutputMock = vi.fn()
+    const core = {
+      getMultilineInput: vi.fn(() => ['./tests/examples/multi_module_a.xml']),
+      getInput: vi.fn((name: string) => {
+        const inputs: Record<string, string> = {
+          token: 'token',
+          title: '',
+          'update-comment': 'false',
+          'min-coverage-overall': '',
+          'min-coverage-changed-files': '',
+          'coverage-counter-type': 'BRANCH'
+        }
+        return inputs[name] ?? ''
+      }),
+      info: vi.fn(),
+      setOutput: setOutputMock
+    } as any
+    const github = {
+      getOctokit: vi.fn(() => ({
+        rest: {
+          repos: {
+            compareCommits: compareCommitsMock
+          },
+          issues: {
+            createComment: createIssueCommentMock
+          }
+        }
+      })),
+      context: {
+        eventName: 'pull_request',
+        payload: {
+          pull_request: {
+            number: 12,
+            base: {sha: 'base_sha'},
+            head: {sha: 'head_sha'}
+          }
+        },
+        repo: {
+          owner: 'owner',
+          repo: 'repo'
+        }
+      }
+    } as any
+
+    await expect(run(core, github)).rejects.toThrowError(
+      Error('No project coverage detected')
+    )
+    expect(setOutputMock).not.toHaveBeenCalled()
+    expect(createIssueCommentMock).not.toHaveBeenCalled()
+  })
+
   test('get changed files from context', async () => {
     const compareCommitsMock = vi.fn(() =>
       Promise.resolve({
