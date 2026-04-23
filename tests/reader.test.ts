@@ -3,6 +3,7 @@ import {
   getCoverageFromCounters,
   getFileCoverage,
   getOverallCoverage,
+  getPercentage,
   getTotalPercentage,
   parseReport,
   resolveReportPaths
@@ -170,6 +171,11 @@ describe('Reader functions', () => {
   test('get total percentage from empty changed files', () => {
     const percentage = getTotalPercentage([])
     expect(percentage).toBeNull()
+  })
+
+  test('get percentage from covered and missed values', () => {
+    expect(getPercentage(42, 8)).toBe(84)
+    expect(getPercentage(0, 0)).toBe(100)
   })
 
   test('get changed files coverage', () => {

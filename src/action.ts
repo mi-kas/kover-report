@@ -3,6 +3,7 @@ import type * as actionsGithub from '@actions/github'
 import {
   getFileCoverage,
   getOverallCoverage,
+  getPercentage,
   getTotalPercentage,
   parseReport,
   resolveReportPaths
@@ -77,8 +78,8 @@ export const run = async (
     percentage: 0,
     files: []
   }
+  let hasOverallCoverage = false
 
-  const totalReports = reportPaths.length
   for (const path of reportPaths) {
     const report = await parseReport(path)
     if (!report) {
@@ -86,9 +87,11 @@ export const run = async (
     }
 
     const reportsCoverage = getOverallCoverage(report, counterType)
+    if (reportsCoverage) {
+      hasOverallCoverage = true
+    }
     overallCoverage.missed += reportsCoverage?.missed ?? 0
     overallCoverage.covered += reportsCoverage?.covered ?? 0
-    overallCoverage.percentage += reportsCoverage?.percentage ?? 0
 
     const reportsFilesCovered = getFileCoverage(
       report,
@@ -100,13 +103,16 @@ export const run = async (
     )
   }
 
-  overallCoverage.percentage = overallCoverage.percentage / totalReports
+  if (!hasOverallCoverage) {
+    throw Error('No project coverage detected')
+  }
+  overallCoverage.percentage = getPercentage(
+    overallCoverage.covered,
+    overallCoverage.missed
+  )
   overallFilesCoverage.percentage =
     getTotalPercentage(overallFilesCoverage.files) ?? 0
 
-  if (!overallCoverage) {
-    throw Error('No project coverage detected')
-  }
   core.setOutput('coverage-overall', overallCoverage.percentage)
   core.setOutput('coverage-changed-files', overallFilesCoverage.percentage)
 
