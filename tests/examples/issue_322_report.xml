@@ -1,0 +1,683 @@
+<?xml version="1.0" ?>
+<report name="Kover Gradle Plugin XML report for :IAN">
+<package name="com/walkertribe/ian/enums">
+<class name="com/walkertribe/ian/enums/GoDefendKt" sourcefilename="GoDefend.kt">
+<method name="GoDefend" desc="(Lcom/walkertribe/ian/enums/OtherMessage$Companion;Lcom/walkertribe/ian/world/ArtemisObject;)Lcom/walkertribe/ian/enums/OtherMessage$GoDefend;">
+<counter type="INSTRUCTION" missed="0" covered="5"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="5"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<sourcefile name="GoDefend.kt">
+<line nr="6" mi="0" ci="5" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="0" covered="5"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</sourcefile>
+<counter type="INSTRUCTION" missed="0" covered="5"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+<counter type="CLASS" missed="0" covered="1"/>
+</package>
+<package name="com/walkertribe/ian/iface">
+<class name="com/walkertribe/ian/iface/ArtemisNetworkInterfaceKt" sourcefilename="ArtemisNetworkInterface.kt">
+<method name="addListeners" desc="(Lcom/walkertribe/ian/iface/ArtemisNetworkInterface;Ljava/lang/Iterable;)V">
+<counter type="INSTRUCTION" missed="0" covered="8"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="8"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/CompositeListenerModule" sourcefilename="CompositeListenerModule.kt">
+<method name="acceptedTypes_delegate$lambda$0" desc="(Lcom/walkertribe/ian/iface/CompositeListenerModule;)Ljava/util/Set;">
+<counter type="INSTRUCTION" missed="0" covered="22"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="3"/>
+</method>
+<method name="&lt;init&gt;" desc="(Ljava/util/List;Ljava/util/List;Ljava/util/List;)V">
+<counter type="INSTRUCTION" missed="0" covered="28"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<method name="&lt;init&gt;" desc="(Ljava/util/List;)V">
+<counter type="INSTRUCTION" missed="0" covered="35"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="4"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="85"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="12"/>
+<counter type="METHOD" missed="0" covered="3"/>
+</class>
+<class name="com/walkertribe/ian/iface/ConnectionEvent" sourcefilename="ConnectionEvent.kt">
+<method name="offerTo" desc="(Lcom/walkertribe/ian/iface/ListenerModule;)V">
+<counter type="INSTRUCTION" missed="0" covered="4"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="&lt;init&gt;" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="9"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="2"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="13"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="3"/>
+<counter type="METHOD" missed="0" covered="2"/>
+</class>
+<class name="com/walkertribe/ian/iface/ConnectionEvent$Disconnect" sourcefilename="ConnectionEvent.kt">
+<method name="&lt;init&gt;" desc="(Lcom/walkertribe/ian/iface/DisconnectCause;)V">
+<counter type="INSTRUCTION" missed="0" covered="8"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="2"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="8"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="2"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/ConnectionEvent$HeartbeatLost" sourcefilename="ConnectionEvent.kt">
+<method name="&lt;init&gt;" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/ConnectionEvent$HeartbeatRegained" sourcefilename="ConnectionEvent.kt">
+<method name="&lt;init&gt;" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/ConnectionEvent$Success" sourcefilename="ConnectionEvent.kt">
+<method name="&lt;init&gt;" desc="(Ljava/lang/String;)V">
+<counter type="INSTRUCTION" missed="0" covered="8"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="8"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/ConnectionEventListenerModule" sourcefilename="ConnectionEventListenerModule.kt">
+<method name="onConnectionEvent" desc="(Lcom/walkertribe/ian/iface/ListenerArgument;)V">
+<counter type="INSTRUCTION" missed="0" covered="12"/>
+<counter type="BRANCH" missed="0" covered="2"/>
+<counter type="LINE" missed="0" covered="2"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="12"/>
+<counter type="BRANCH" missed="0" covered="2"/>
+<counter type="LINE" missed="0" covered="2"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/ConnectionEventListenerModule$DefaultImpls" sourcefilename="ConnectionEventListenerModule.kt">
+<method name="onConnectionEvent" desc="(Lcom/walkertribe/ian/iface/ConnectionEventListenerModule;Lcom/walkertribe/ian/iface/ListenerArgument;)V">
+<counter type="INSTRUCTION" missed="3" covered="0"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="1" covered="0"/>
+</method>
+<counter type="INSTRUCTION" missed="3" covered="0"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="1" covered="0"/>
+<counter type="METHOD" missed="1" covered="0"/>
+</class>
+<class name="com/walkertribe/ian/iface/DisconnectCause$IOError" sourcefilename="DisconnectCause.kt">
+<method name="&lt;init&gt;" desc="(Ljava/io/IOException;)V">
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/DisconnectCause$LocalDisconnect" sourcefilename="DisconnectCause.kt">
+<method name="&lt;init&gt;" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="2"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="2"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/DisconnectCause$PacketParseError" sourcefilename="DisconnectCause.kt">
+<method name="&lt;init&gt;" desc="(Lcom/walkertribe/ian/protocol/PacketException;)V">
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/DisconnectCause$RemoteDisconnect" sourcefilename="DisconnectCause.kt">
+<method name="&lt;init&gt;" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="2"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="2"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/DisconnectCause$UnknownError" sourcefilename="DisconnectCause.kt">
+<method name="&lt;init&gt;" desc="(Ljava/lang/Throwable;)V">
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/DisconnectCause$UnsupportedVersion" sourcefilename="DisconnectCause.kt">
+<method name="&lt;init&gt;" desc="(Lcom/walkertribe/ian/util/Version;)V">
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/HeartbeatManager" sourcefilename="HeartbeatManager.kt">
+<method name="onGameOver" desc="(Lcom/walkertribe/ian/protocol/core/GameOverReasonPacket;)V">
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="onHeartbeat" desc="(Lcom/walkertribe/ian/protocol/core/HeartbeatPacket$Server;)V">
+<counter type="INSTRUCTION" missed="0" covered="4"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="resetHeartbeatTimestamp" desc="(J)V">
+<counter type="INSTRUCTION" missed="0" covered="14"/>
+<counter type="BRANCH" missed="0" covered="2"/>
+<counter type="LINE" missed="0" covered="4"/>
+</method>
+<method name="onGameStart" desc="(Lcom/walkertribe/ian/protocol/core/GameStartPacket;)V">
+<counter type="INSTRUCTION" missed="0" covered="7"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="2"/>
+</method>
+<method name="setTimeout" desc="(J)V">
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="&lt;init&gt;" desc="(Lcom/walkertribe/ian/iface/ArtemisNetworkInterface;)V">
+<counter type="INSTRUCTION" missed="0" covered="19"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<method name="sendHeartbeatIfNeeded" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="22"/>
+<counter type="BRANCH" missed="0" covered="4"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<method name="setAutoSendHeartbeat" desc="(Z)V">
+<counter type="INSTRUCTION" missed="0" covered="3"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="checkForHeartbeat" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="26"/>
+<counter type="BRANCH" missed="0" covered="6"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="101"/>
+<counter type="BRANCH" missed="0" covered="12"/>
+<counter type="LINE" missed="0" covered="25"/>
+<counter type="METHOD" missed="0" covered="9"/>
+</class>
+<class name="com/walkertribe/ian/iface/HeartbeatManagerListenersKt" sourcefilename="HeartbeatManagerListeners.kt">
+<method name="getListeners" desc="(Lcom/walkertribe/ian/iface/HeartbeatManager;)Ljava/util/List;">
+<counter type="INSTRUCTION" missed="0" covered="44"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="4"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="44"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="4"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/KtorArtemisNetworkInterface" sourcefilename="KtorArtemisNetworkInterface.kt">
+<method name="getConnectionListenerJob$IAN" desc="()Lkotlinx/coroutines/Job;">
+<counter type="INSTRUCTION" missed="0" covered="11"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="setVersion" desc="(Lcom/walkertribe/ian/util/Version;)V">
+<counter type="INSTRUCTION" missed="0" covered="44"/>
+<counter type="BRANCH" missed="0" covered="12"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<method name="getParseResultDispatchJob$IAN" desc="()Lkotlinx/coroutines/Job;">
+<counter type="INSTRUCTION" missed="0" covered="11"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="sendConnectionEvent" desc="(Lcom/walkertribe/ian/iface/ConnectionEvent;)V">
+<counter type="INSTRUCTION" missed="0" covered="5"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="isRunning$IAN" desc="()Z">
+<counter type="INSTRUCTION" missed="0" covered="9"/>
+<counter type="BRANCH" missed="0" covered="4"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="connect" desc="(Ljava/lang/String;IJLkotlin/coroutines/Continuation;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="0" covered="108"/>
+<counter type="BRANCH" missed="0" covered="4"/>
+<counter type="LINE" missed="0" covered="15"/>
+</method>
+<method name="setTimeout" desc="(J)V">
+<counter type="INSTRUCTION" missed="0" covered="4"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="start" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="76"/>
+<counter type="BRANCH" missed="0" covered="4"/>
+<counter type="LINE" missed="0" covered="8"/>
+</method>
+<method name="sendPacket" desc="(Lcom/walkertribe/ian/protocol/Packet$Client;)V">
+<counter type="INSTRUCTION" missed="0" covered="5"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="onParseResult" desc="(Lcom/walkertribe/ian/iface/ParseResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="0" covered="40"/>
+<counter type="BRANCH" missed="1" covered="3"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<method name="receiveExceptionHandler_delegate$lambda$0" desc="(Lcom/walkertribe/ian/iface/KtorArtemisNetworkInterface;)Lkotlinx/coroutines/CoroutineExceptionHandler;">
+<counter type="INSTRUCTION" missed="0" covered="2"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="_init_$lambda$0" desc="(Lcom/walkertribe/ian/iface/KtorArtemisNetworkInterface;Lcom/walkertribe/ian/protocol/core/setup/WelcomePacket;)Lkotlin/Unit;">
+<counter type="INSTRUCTION" missed="0" covered="17"/>
+<counter type="BRANCH" missed="0" covered="2"/>
+<counter type="LINE" missed="0" covered="4"/>
+</method>
+<method name="handleException" desc="(Lkotlin/coroutines/CoroutineContext;Ljava/lang/Throwable;)V">
+<counter type="INSTRUCTION" missed="0" covered="9"/>
+<counter type="BRANCH" missed="0" covered="4"/>
+<counter type="LINE" missed="0" covered="9"/>
+</method>
+<method name="sendExceptionHandler_delegate$lambda$0" desc="(Lcom/walkertribe/ian/iface/KtorArtemisNetworkInterface;)Lkotlinx/coroutines/CoroutineExceptionHandler;">
+<counter type="INSTRUCTION" missed="0" covered="2"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="getDisconnectCauseException" desc="()Ljava/lang/Throwable;">
+<counter type="INSTRUCTION" missed="0" covered="27"/>
+<counter type="BRANCH" missed="0" covered="6"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<method name="getStartTime$IAN" desc="()Ljava/lang/Long;">
+<counter type="INSTRUCTION" missed="0" covered="2"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="&lt;init&gt;" desc="(Lcom/walkertribe/ian/util/Version;)V">
+<counter type="INSTRUCTION" missed="0" covered="111"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="17"/>
+</method>
+<method name="dispose" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="29"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="5"/>
+</method>
+<method name="getSendJob$IAN" desc="()Lkotlinx/coroutines/Job;">
+<counter type="INSTRUCTION" missed="0" covered="11"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="isConnected" desc="()Z">
+<counter type="INSTRUCTION" missed="0" covered="5"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="stop" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="87"/>
+<counter type="BRANCH" missed="0" covered="8"/>
+<counter type="LINE" missed="0" covered="14"/>
+</method>
+<method name="addListenerModule" desc="(Lcom/walkertribe/ian/iface/ListenerModule;)V">
+<counter type="INSTRUCTION" missed="0" covered="4"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="setAutoSendHeartbeat" desc="(Z)V">
+<counter type="INSTRUCTION" missed="0" covered="4"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="dispatchDisconnect$IAN" desc="()V">
+<counter type="INSTRUCTION" missed="0" covered="14"/>
+<counter type="BRANCH" missed="0" covered="2"/>
+<counter type="LINE" missed="0" covered="2"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="637"/>
+<counter type="BRANCH" missed="1" covered="49"/>
+<counter type="LINE" missed="0" covered="102"/>
+<counter type="METHOD" missed="0" covered="24"/>
+</class>
+<class name="com/walkertribe/ian/iface/KtorArtemisNetworkInterface$connect$2" sourcefilename="KtorArtemisNetworkInterface.kt">
+<method name="invokeSuspend" desc="(Ljava/lang/Object;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="0" covered="19"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<method name="invokeSuspend$lambda$0" desc="(Lio/ktor/network/sockets/SocketOptions$TCPClientSocketOptions;)Lkotlin/Unit;">
+<counter type="INSTRUCTION" missed="0" covered="4"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="23"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="2"/>
+<counter type="METHOD" missed="0" covered="2"/>
+</class>
+<class name="com/walkertribe/ian/iface/KtorArtemisNetworkInterface$start$1" sourcefilename="KtorArtemisNetworkInterface.kt">
+<method name="invokeSuspend" desc="(Ljava/lang/Object;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="8" covered="57"/>
+<counter type="BRANCH" missed="2" covered="6"/>
+<counter type="LINE" missed="0" covered="6"/>
+</method>
+<counter type="INSTRUCTION" missed="8" covered="57"/>
+<counter type="BRANCH" missed="2" covered="6"/>
+<counter type="LINE" missed="0" covered="6"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/KtorArtemisNetworkInterface$start$2" sourcefilename="KtorArtemisNetworkInterface.kt">
+<method name="invokeSuspend" desc="(Ljava/lang/Object;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="4" covered="36"/>
+<counter type="BRANCH" missed="2" covered="2"/>
+<counter type="LINE" missed="0" covered="2"/>
+</method>
+<counter type="INSTRUCTION" missed="4" covered="36"/>
+<counter type="BRANCH" missed="2" covered="2"/>
+<counter type="LINE" missed="0" covered="2"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/KtorArtemisNetworkInterface$start$3" sourcefilename="KtorArtemisNetworkInterface.kt">
+<method name="invokeSuspend" desc="(Ljava/lang/Object;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="0" covered="26"/>
+<counter type="BRANCH" missed="0" covered="4"/>
+<counter type="LINE" missed="0" covered="3"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="26"/>
+<counter type="BRANCH" missed="0" covered="4"/>
+<counter type="LINE" missed="0" covered="3"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<class name="com/walkertribe/ian/iface/KtorArtemisNetworkInterface$start$4" sourcefilename="KtorArtemisNetworkInterface.kt">
+<method name="invokeSuspend" desc="(Ljava/lang/Object;)Ljava/lang/Object;">
+<counter type="INSTRUCTION" missed="0" covered="19"/>
+<counter type="BRANCH" missed="1" covered="1"/>
+<counter type="LINE" missed="0" covered="2"/>
+</method>
+<counter type="INSTRUCTION" missed="0" covered="19"/>
+<counter type="BRANCH" missed="1" covered="1"/>
+<counter type="LINE" missed="0" covered="2"/>
+<counter type="METHOD" missed="0" covered="1"/>
+</class>
+<sourcefile name="KtorArtemisNetworkInterface.kt">
+<line nr="36" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="38" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="45" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="46" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="47" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="49" mi="0" ci="10" mb="0" cb="0"/>
+<line nr="50" mi="0" ci="10" mb="0" cb="0"/>
+<line nr="51" mi="0" ci="10" mb="0" cb="0"/>
+<line nr="52" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="55" mi="0" ci="9" mb="0" cb="0"/>
+<line nr="56" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="57" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="58" mi="0" ci="6" mb="0" cb="0"/>
+<line nr="60" mi="0" ci="5" mb="0" cb="2"/>
+<line nr="61" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="63" mi="0" ci="27" mb="0" cb="10"/>
+<line nr="64" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="65" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="69" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="70" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="71" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="72" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="73" mi="0" ci="1" mb="0" cb="2"/>
+<line nr="74" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="76" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="80" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="81" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="82" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="83" mi="0" ci="1" mb="0" cb="2"/>
+<line nr="84" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="86" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="92" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="93" mi="0" ci="8" mb="0" cb="2"/>
+<line nr="94" mi="0" ci="8" mb="0" cb="2"/>
+<line nr="95" mi="0" ci="7" mb="0" cb="2"/>
+<line nr="96" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="99" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="101" mi="0" ci="9" mb="0" cb="4"/>
+<line nr="103" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="104" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="105" mi="0" ci="6" mb="0" cb="0"/>
+<line nr="106" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="107" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="108" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="109" mi="0" ci="2" mb="0" cb="2"/>
+<line nr="110" mi="0" ci="9" mb="0" cb="0"/>
+<line nr="113" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="115" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="118" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="122" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="126" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="131" mi="0" ci="6" mb="0" cb="4"/>
+<line nr="133" mi="0" ci="6" mb="0" cb="0"/>
+<line nr="135" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="136" mi="0" ci="15" mb="0" cb="0"/>
+<line nr="137" mi="0" ci="7" mb="0" cb="4"/>
+<line nr="138" mi="0" ci="10" mb="0" cb="0"/>
+<line nr="139" mi="4" ci="6" mb="1" cb="1"/>
+<line nr="140" mi="4" ci="28" mb="1" cb="1"/>
+<line nr="141" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="143" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="147" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="148" mi="0" ci="15" mb="0" cb="0"/>
+<line nr="149" mi="0" ci="4" mb="1" cb="1"/>
+<line nr="151" mi="4" ci="32" mb="1" cb="1"/>
+<line nr="155" mi="0" ci="15" mb="0" cb="0"/>
+<line nr="156" mi="0" ci="7" mb="0" cb="4"/>
+<line nr="157" mi="0" ci="14" mb="0" cb="0"/>
+<line nr="159" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="163" mi="0" ci="15" mb="0" cb="0"/>
+<line nr="164" mi="0" ci="4" mb="1" cb="1"/>
+<line nr="165" mi="0" ci="15" mb="0" cb="0"/>
+<line nr="171" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="175" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="179" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="180" mi="0" ci="3" mb="0" cb="2"/>
+<line nr="181" mi="0" ci="15" mb="0" cb="0"/>
+<line nr="182" mi="0" ci="13" mb="0" cb="0"/>
+<line nr="184" mi="0" ci="7" mb="1" cb="1"/>
+<line nr="190" mi="0" ci="3" mb="0" cb="2"/>
+<line nr="192" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="193" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="194" mi="0" ci="9" mb="0" cb="0"/>
+<line nr="196" mi="0" ci="12" mb="0" cb="0"/>
+<line nr="197" mi="0" ci="6" mb="0" cb="0"/>
+<line nr="198" mi="0" ci="6" mb="0" cb="0"/>
+<line nr="199" mi="0" ci="6" mb="0" cb="0"/>
+<line nr="201" mi="0" ci="5" mb="0" cb="2"/>
+<line nr="204" mi="0" ci="5" mb="0" cb="2"/>
+<line nr="207" mi="0" ci="5" mb="0" cb="2"/>
+<line nr="211" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="212" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="213" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="227" mi="0" ci="5" mb="0" cb="2"/>
+<line nr="229" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="230" mi="0" ci="7" mb="0" cb="2"/>
+<line nr="231" mi="0" ci="38" mb="0" cb="0"/>
+<line nr="232" mi="0" ci="19" mb="0" cb="0"/>
+<line nr="233" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="236" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="237" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="238" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="239" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="240" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="241" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="242" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="244" mi="0" ci="17" mb="0" cb="0"/>
+<line nr="245" mi="0" ci="18" mb="0" cb="0"/>
+<line nr="246" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="248" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="252" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="253" mi="0" ci="8" mb="0" cb="0"/>
+<line nr="254" mi="0" ci="8" mb="0" cb="0"/>
+<line nr="255" mi="0" ci="8" mb="0" cb="0"/>
+<line nr="256" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="260" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="261" mi="0" ci="11" mb="0" cb="2"/>
+<counter type="INSTRUCTION" missed="12" covered="798"/>
+<counter type="BRANCH" missed="6" covered="62"/>
+<counter type="LINE" missed="0" covered="117"/>
+</sourcefile>
+<sourcefile name="ConnectionEventListenerModule.kt">
+<line nr="8" mi="3" ci="0" mb="0" cb="0"/>
+<line nr="9" mi="0" ci="3" mb="0" cb="2"/>
+<line nr="10" mi="0" ci="9" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="3" covered="12"/>
+<counter type="BRANCH" missed="0" covered="2"/>
+<counter type="LINE" missed="1" covered="2"/>
+</sourcefile>
+<sourcefile name="ConnectionEvent.kt">
+<line nr="11" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="17" mi="0" ci="8" mb="0" cb="0"/>
+<line nr="25" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="29" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="38" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="46" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="49" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="52" mi="0" ci="4" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="0" covered="35"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="8"/>
+</sourcefile>
+<sourcefile name="HeartbeatManagerListeners.kt">
+<line nr="9" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="10" mi="0" ci="21" mb="0" cb="0"/>
+<line nr="11" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="12" mi="0" ci="11" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="0" covered="44"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="4"/>
+</sourcefile>
+<sourcefile name="DisconnectCause.kt">
+<line nr="13" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="19" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="25" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="31" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="37" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="40" mi="0" ci="7" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="0" covered="32"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="6"/>
+</sourcefile>
+<sourcefile name="ArtemisNetworkInterface.kt">
+<line nr="66" mi="0" ci="8" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="0" covered="8"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="1"/>
+</sourcefile>
+<sourcefile name="CompositeListenerModule.kt">
+<line nr="9" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="10" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="11" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="12" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="14" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="15" mi="0" ci="14" mb="0" cb="0"/>
+<line nr="16" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="17" mi="0" ci="1" mb="0" cb="0"/>
+<line nr="22" mi="0" ci="2" mb="0" cb="0"/>
+<line nr="24" mi="0" ci="10" mb="0" cb="0"/>
+<line nr="25" mi="0" ci="11" mb="0" cb="0"/>
+<line nr="27" mi="0" ci="12" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="0" covered="85"/>
+<counter type="BRANCH" missed="0" covered="0"/>
+<counter type="LINE" missed="0" covered="12"/>
+</sourcefile>
+<sourcefile name="HeartbeatManager.kt">
+<line nr="14" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="16" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="17" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="19" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="20" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="25" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="30" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="36" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="37" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="43" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="49" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="53" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="54" mi="0" ci="3" mb="0" cb="2"/>
+<line nr="55" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="56" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="66" mi="0" ci="6" mb="0" cb="4"/>
+<line nr="69" mi="0" ci="7" mb="0" cb="0"/>
+<line nr="70" mi="0" ci="5" mb="0" cb="2"/>
+<line nr="71" mi="0" ci="3" mb="0" cb="0"/>
+<line nr="72" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="82" mi="0" ci="3" mb="0" cb="2"/>
+<line nr="85" mi="0" ci="4" mb="0" cb="0"/>
+<line nr="86" mi="0" ci="7" mb="0" cb="2"/>
+<line nr="87" mi="0" ci="5" mb="0" cb="0"/>
+<line nr="88" mi="0" ci="3" mb="0" cb="0"/>
+<counter type="INSTRUCTION" missed="0" covered="101"/>
+<counter type="BRANCH" missed="0" covered="12"/>
+<counter type="LINE" missed="0" covered="25"/>
+</sourcefile>
+<counter type="INSTRUCTION" missed="15" covered="1115"/>
+<counter type="BRANCH" missed="6" covered="76"/>
+<counter type="LINE" missed="1" covered="175"/>
+<counter type="METHOD" missed="1" covered="57"/>
+<counter type="CLASS" missed="1" covered="22"/>
+</package>
+<counter type="INSTRUCTION" missed="15" covered="1120"/>
+<counter type="BRANCH" missed="6" covered="76"/>
+<counter type="LINE" missed="1" covered="176"/>
+<counter type="METHOD" missed="1" covered="58"/>
+<counter type="CLASS" missed="1" covered="23"/>
+</report>

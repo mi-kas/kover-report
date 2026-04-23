@@ -270,6 +270,75 @@ describe('Action functions', () => {
     expect(createIssueCommentMock).not.toHaveBeenCalled()
   })
 
+  test('run uses line coverage by default for issue 322 fixture', async () => {
+    const compareCommitsMock = vi.fn(() =>
+      Promise.resolve({
+        data: {
+          files: []
+        }
+      })
+    )
+    const createIssueCommentMock = vi.fn(() => Promise.resolve({}))
+    const setOutputMock = vi.fn()
+    const core = {
+      getMultilineInput: vi.fn(() => ['./tests/examples/issue_322_report.xml']),
+      getInput: vi.fn((name: string) => {
+        const inputs: Record<string, string> = {
+          token: 'token',
+          title: '',
+          'update-comment': 'false',
+          'min-coverage-overall': '',
+          'min-coverage-changed-files': '',
+          'coverage-counter-type': ''
+        }
+        return inputs[name] ?? ''
+      }),
+      info: vi.fn(),
+      setOutput: setOutputMock
+    } as any
+    const github = {
+      getOctokit: vi.fn(() => ({
+        rest: {
+          repos: {
+            compareCommits: compareCommitsMock
+          },
+          issues: {
+            createComment: createIssueCommentMock
+          }
+        }
+      })),
+      context: {
+        eventName: 'pull_request',
+        payload: {
+          pull_request: {
+            number: 322,
+            base: {sha: 'base_sha'},
+            head: {sha: 'head_sha'}
+          }
+        },
+        repo: {
+          owner: 'owner',
+          repo: 'repo'
+        }
+      }
+    } as any
+
+    await run(core, github)
+
+    expect(setOutputMock).toHaveBeenNthCalledWith(1, 'coverage-overall', 99.44)
+    expect(setOutputMock).toHaveBeenNthCalledWith(
+      2,
+      'coverage-changed-files',
+      0
+    )
+    expect(createIssueCommentMock).toHaveBeenCalledWith({
+      issue_number: 322,
+      body: `|Total Project Coverage|99.44%|\n|:-|:-:|`,
+      owner: 'owner',
+      repo: 'repo'
+    })
+  })
+
   test('get changed files from context', async () => {
     const compareCommitsMock = vi.fn(() =>
       Promise.resolve({

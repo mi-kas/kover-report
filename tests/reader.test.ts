@@ -147,6 +147,21 @@ describe('Reader functions', () => {
     expect(coverage).toBeNull()
   })
 
+  test('get overall coverage from issue 322 fixture defaults to line coverage', async () => {
+    const report = await parseReport('./tests/examples/issue_322_report.xml')
+
+    expect(getOverallCoverage(report!, 'LINE')).toMatchObject({
+      missed: 1,
+      covered: 176,
+      percentage: 99.44
+    })
+    expect(getOverallCoverage(report!, 'METHOD')).toMatchObject({
+      missed: 1,
+      covered: 58,
+      percentage: 98.31
+    })
+  })
+
   test('get total percentage from changed files', () => {
     const files: ChangedFileWithCoverage[] = [
       {
