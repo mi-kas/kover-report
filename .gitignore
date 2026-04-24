@@ -99,3 +99,5 @@ tests/runner/*
 lib/**/*
 
 .idea
+
+.codex
