@@ -20,6 +20,10 @@ inputs:
       - INSTRUCTION
       - LINE
       - BRANCH
+  upload_url:
+    type: string
+  upload_token:
+    type: string
 
 outputs:
   coverage-overall:
