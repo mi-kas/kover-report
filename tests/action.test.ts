@@ -426,7 +426,7 @@ describe('Action functions', () => {
     const [url, request] = fetchMock.mock.calls[0]
     expect(url).toBeInstanceOf(URL)
     expect((url as URL).toString()).toBe(
-      'https://coverage.example.com/api/v1/reports/upload'
+      'https://coverage.example.com/base/path'
     )
     expect(request.method).toBe('POST')
     expect(request.headers).toEqual({

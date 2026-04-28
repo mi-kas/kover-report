@@ -160,7 +160,7 @@ export const uploadReports = async (
     throw Error('Both upload_url and upload_token must be set together')
   }
 
-  const uploadEndpoint = new URL('/api/v1/reports/upload', uploadUrl)
+  const uploadEndpoint = new URL(uploadUrl)
   const metadata = getUploadMetadata(github.context)
 
   for (const reportPath of reportPaths) {

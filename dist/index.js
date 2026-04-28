@@ -94,7 +94,7 @@ const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github) 
     if (uploadUrl == null || uploadToken == null) {
         throw Error('Both upload_url and upload_token must be set together');
     }
-    const uploadEndpoint = new URL('/api/v1/reports/upload', uploadUrl);
+    const uploadEndpoint = new URL(uploadUrl);
     const metadata = (0, exports.getUploadMetadata)(github.context);
     for (const reportPath of reportPaths) {
         core.info(`Uploading coverage report ${reportPath} to ${uploadEndpoint}`);

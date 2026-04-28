@@ -19,7 +19,7 @@ Create a workflow `.yml` file in your repositories `.github/workflows` directory
 - `min-coverage-overall` - [*optional* integer] The minimum code coverage that is required to pass for overall project
 - `min-coverage-changed-files` - [*optional* integer] The minimum code coverage that is required to pass for changed files
 - `coverage-counter-type` - [*optional* string (default: `LINE`)] Report counter type used to calculate coverage metrics. Possible values are: `INSTRUCTION`, `LINE` or `BRANCH`.
-- `upload_url` - [*optional* string] Base URL of the upload service that receives coverage XML reports. Must be set together with `upload_token`.
+- `upload_url` - [*optional* string] Full URL of the upload service endpoint that receives coverage XML reports. Must be set together with `upload_token`.
 - `upload_token` - [*optional* string] Bearer token used to authenticate coverage XML report uploads. Must be set together with `upload_url`.
 
 ### Outputs
@@ -65,7 +65,7 @@ jobs:
           min-coverage-overall: 80
           min-coverage-changed-files: 80
           coverage-counter-type: LINE
-          upload_url: https://coverage.example.com
+          upload_url: https://coverage.example.com/api/v1/reports/upload
           upload_token: ${{ secrets.COVERAGE_UPLOAD_TOKEN }}
 ```
 
@@ -82,9 +82,9 @@ anything, it is still treated as a literal path so the action keeps the
 existing missing-file behavior instead of silently skipping it.
 
 When both `upload_url` and `upload_token` are provided, each resolved XML
-report is also uploaded with a multipart `POST` request to
-`<upload_url>/api/v1/reports/upload`. The request includes repository, branch,
-commit SHA, commit timestamp, commit author, commit subject, and the XML file.
+report is also uploaded with a multipart `POST` request directly to
+`upload_url`. The request includes repository, branch, commit SHA, commit
+timestamp, commit author, commit subject, and the XML file.
 
 <br>
 <img src="/screenshot.png" alt="output screenshot" title="output screenshot" width="500" />
