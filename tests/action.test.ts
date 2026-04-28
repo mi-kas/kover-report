@@ -1,5 +1,18 @@
-import {describe, expect, test, vi} from 'vitest'
-import {addComment, getChangedFiles, getDetails, run} from '../src/action'
+import {afterEach, describe, expect, test, vi} from 'vitest'
+import {
+  addComment,
+  getChangedFiles,
+  getDetails,
+  getUploadMetadata,
+  run,
+  uploadReports
+} from '../src/action'
+
+afterEach(() => {
+  vi.restoreAllMocks()
+  vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
+})
 
 describe('Action functions', () => {
   test('run ignores modules without matching changed files', async () => {
@@ -337,6 +350,170 @@ describe('Action functions', () => {
       owner: 'owner',
       repo: 'repo'
     })
+  })
+
+  test('run uploads resolved reports when upload inputs are set', async () => {
+    const compareCommitsMock = vi.fn(() =>
+      Promise.resolve({
+        data: {
+          files: []
+        }
+      })
+    )
+    const createIssueCommentMock = vi.fn(() => Promise.resolve({}))
+    const setOutputMock = vi.fn()
+    const infoMock = vi.fn()
+    const fetchMock = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        statusText: 'OK'
+      })
+    )
+
+    vi.stubGlobal('fetch', fetchMock)
+    const core = {
+      getMultilineInput: vi.fn(() => ['./tests/examples/report.xml']),
+      getInput: vi.fn((name: string) => {
+        const inputs: Record<string, string> = {
+          token: 'token',
+          title: '',
+          'update-comment': 'false',
+          'min-coverage-overall': '',
+          'min-coverage-changed-files': '',
+          'coverage-counter-type': '',
+          upload_url: 'https://coverage.example.com/base/path',
+          upload_token: 'upload-token'
+        }
+        return inputs[name] ?? ''
+      }),
+      info: infoMock,
+      setOutput: setOutputMock
+    } as any
+    const github = {
+      getOctokit: vi.fn(() => ({
+        rest: {
+          repos: {
+            compareCommits: compareCommitsMock
+          },
+          issues: {
+            createComment: createIssueCommentMock
+          }
+        }
+      })),
+      context: {
+        eventName: 'pull_request',
+        actor: 'octocat',
+        ref_name: '12/merge',
+        sha: 'abc123',
+        payload: {
+          pull_request: {
+            number: 12,
+            base: {sha: 'base_sha'},
+            head: {sha: 'head_sha', ref: 'feature/upload'}
+          }
+        },
+        repo: {
+          owner: 'mi-kas',
+          repo: 'kover-report'
+        }
+      }
+    } as any
+
+    await run(core, github)
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const [url, request] = fetchMock.mock.calls[0]
+    expect(url).toBeInstanceOf(URL)
+    expect((url as URL).toString()).toBe(
+      'https://coverage.example.com/api/v1/reports/upload'
+    )
+    expect(request.method).toBe('POST')
+    expect(request.headers).toEqual({
+      Authorization: 'Bearer upload-token'
+    })
+    expect(request.body).toBeInstanceOf(FormData)
+    const formData = request.body as FormData
+    expect(formData.get('repoSlug')).toBe('mi-kas/kover-report')
+    expect(formData.get('branch')).toBe('feature/upload')
+    expect(formData.get('commitSha')).toBe('abc123')
+    expect(formData.get('commitTimestamp')).toEqual(expect.any(String))
+    expect(formData.get('commitTimestamp')).not.toBe('')
+    expect(formData.get('commitUser')).toBe('octocat')
+    expect(formData.get('commitMessage')).toEqual(expect.any(String))
+    expect(formData.get('commitMessage')).not.toBe('')
+    const uploadedFile = formData.get('file')
+    expect(uploadedFile).toBeInstanceOf(File)
+    expect((uploadedFile as File).name).toBe('report.xml')
+  })
+
+  test('upload reports requires both upload inputs', async () => {
+    await expect(
+      uploadReports(
+        ['./tests/examples/report.xml'],
+        'https://coverage.example.com',
+        undefined,
+        {info: vi.fn()} as any,
+        {context: {actor: 'octocat'}} as any
+      )
+    ).rejects.toThrowError(
+      Error('Both upload_url and upload_token must be set together')
+    )
+  })
+
+  test('get upload metadata uses github actor as commit user', () => {
+    const metadata = getUploadMetadata({
+      actor: 'octocat',
+      ref_name: 'main',
+      sha: 'abc123',
+      payload: {},
+      repo: {
+        owner: 'mi-kas',
+        repo: 'kover-report'
+      }
+    } as any)
+
+    expect(metadata.commitUser).toBe('octocat')
+  })
+
+  test('get upload metadata derives repo, branch and sha from pull request context', () => {
+    const metadata = getUploadMetadata({
+      actor: 'octocat',
+      ref_name: '12/merge',
+      sha: 'abc123',
+      payload: {
+        pull_request: {
+          head: {
+            ref: 'feature/upload'
+          }
+        }
+      },
+      repo: {
+        owner: 'mi-kas',
+        repo: 'kover-report'
+      }
+    } as any)
+
+    expect(metadata.repoSlug).toBe('mi-kas/kover-report')
+    expect(metadata.branch).toBe('feature/upload')
+    expect(metadata.commitSha).toBe('abc123')
+  })
+
+  test('get upload metadata derives branch from push ref when no pull request exists', () => {
+    const metadata = getUploadMetadata({
+      actor: 'octocat',
+      ref_name: 'main',
+      sha: 'def456',
+      payload: {},
+      repo: {
+        owner: 'mi-kas',
+        repo: 'kover-report'
+      }
+    } as any)
+
+    expect(metadata.repoSlug).toBe('mi-kas/kover-report')
+    expect(metadata.branch).toBe('main')
+    expect(metadata.commitSha).toBe('def456')
   })
 
   test('get changed files from context', async () => {

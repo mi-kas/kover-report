@@ -1,3 +1,6 @@
+import {execFileSync} from 'node:child_process'
+import {readFile} from 'node:fs/promises'
+import {basename} from 'node:path'
 import type * as actionsCore from '@actions/core'
 import type * as actionsGithub from '@actions/github'
 import {
@@ -49,6 +52,10 @@ export const run = async (
   const counterType = (
     counterTypeInput !== '' ? counterTypeInput : 'LINE'
   ) as CounterType
+  const uploadUrlInput = core.getInput('upload_url', {required: false})
+  const uploadTokenInput = core.getInput('upload_token', {required: false})
+  const uploadUrl = uploadUrlInput !== '' ? uploadUrlInput : undefined
+  const uploadToken = uploadTokenInput !== '' ? uploadTokenInput : undefined
 
   const octokit = github.getOctokit(token)
   const event = github.context.eventName
@@ -59,6 +66,8 @@ export const run = async (
   }
 
   const reportPaths = resolveReportPaths(paths)
+
+  await uploadReports(reportPaths, uploadUrl, uploadToken, core, github)
 
   const details = getDetails(event, github.context.payload)
 
@@ -135,6 +144,79 @@ export const run = async (
     )
   }
 }
+
+export const uploadReports = async (
+  reportPaths: string[],
+  uploadUrl: string | undefined,
+  uploadToken: string | undefined,
+  core: typeof actionsCore,
+  github: typeof actionsGithub
+): Promise<void> => {
+  if (uploadUrl == null && uploadToken == null) {
+    return
+  }
+
+  if (uploadUrl == null || uploadToken == null) {
+    throw Error('Both upload_url and upload_token must be set together')
+  }
+
+  const uploadEndpoint = new URL('/api/v1/reports/upload', uploadUrl)
+  const metadata = getUploadMetadata(github.context)
+
+  for (const reportPath of reportPaths) {
+    core.info(`Uploading coverage report ${reportPath} to ${uploadEndpoint}`)
+
+    const reportContent = await readFile(reportPath)
+    const formData = new FormData()
+    formData.set('repoSlug', metadata.repoSlug)
+    formData.set('branch', metadata.branch)
+    formData.set('commitSha', metadata.commitSha)
+    formData.set('commitTimestamp', metadata.commitTimestamp)
+    formData.set('commitUser', metadata.commitUser)
+    formData.set('commitMessage', metadata.commitMessage)
+    formData.set(
+      'file',
+      new File([reportContent], basename(reportPath), {type: 'application/xml'})
+    )
+
+    const response = await fetch(uploadEndpoint, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${uploadToken}`
+      },
+      body: formData
+    })
+
+    if (!response.ok) {
+      throw Error(
+        `Upload failed for ${reportPath}: ${response.status} ${response.statusText}`
+      )
+    }
+  }
+}
+
+export const getUploadMetadata = (
+  context: typeof actionsGithub.context & {ref_name?: string}
+): {
+  repoSlug: string
+  branch: string
+  commitSha: string
+  commitTimestamp: string
+  commitUser: string
+  commitMessage: string
+} => ({
+  repoSlug: `${context.repo.owner}/${context.repo.repo}`,
+  branch: context.payload.pull_request?.head?.ref ?? context.ref_name ?? '',
+  commitSha: context.sha,
+  commitTimestamp: getGitOutput('%cI'),
+  commitUser: context.actor,
+  commitMessage: getGitOutput('%s')
+})
+
+export const getGitOutput = (format: string): string =>
+  execFileSync('git', ['show', '-s', `--format=${format}`, 'HEAD'], {
+    encoding: 'utf8'
+  }).trim()
 
 export const getDetails = (
   event: string,
