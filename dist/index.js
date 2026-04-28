@@ -7,7 +7,10 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getChangedFiles = exports.addComment = exports.getDetails = exports.run = void 0;
+exports.getChangedFiles = exports.addComment = exports.getDetails = exports.getGitOutput = exports.getUploadMetadata = exports.uploadReports = exports.run = void 0;
+const node_child_process_1 = __nccwpck_require__(1421);
+const promises_1 = __nccwpck_require__(1455);
+const node_path_1 = __nccwpck_require__(6760);
 const reader_1 = __nccwpck_require__(8853);
 const render_1 = __nccwpck_require__(7746);
 const run = async (core, github) => {
@@ -32,6 +35,10 @@ const run = async (core, github) => {
         required: false
     });
     const counterType = (counterTypeInput !== '' ? counterTypeInput : 'LINE');
+    const uploadUrlInput = core.getInput('upload_url', { required: false });
+    const uploadTokenInput = core.getInput('upload_token', { required: false });
+    const uploadUrl = uploadUrlInput !== '' ? uploadUrlInput : undefined;
+    const uploadToken = uploadTokenInput !== '' ? uploadTokenInput : undefined;
     const octokit = github.getOctokit(token);
     const event = github.context.eventName;
     core.info(`Event is ${event}`);
@@ -39,6 +46,7 @@ const run = async (core, github) => {
         throw Error('At least one path must be provided');
     }
     const reportPaths = (0, reader_1.resolveReportPaths)(paths);
+    await (0, exports.uploadReports)(reportPaths, uploadUrl, uploadToken, core, github);
     const details = (0, exports.getDetails)(event, github.context.payload);
     const changedFiles = await (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
     const overallCoverage = {
@@ -79,6 +87,52 @@ const run = async (core, github) => {
     }
 };
 exports.run = run;
+const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github) => {
+    if (uploadUrl == null && uploadToken == null) {
+        return;
+    }
+    if (uploadUrl == null || uploadToken == null) {
+        throw Error('Both upload_url and upload_token must be set together');
+    }
+    const uploadEndpoint = new URL('/api/v1/reports/upload', uploadUrl);
+    const metadata = (0, exports.getUploadMetadata)(github.context);
+    for (const reportPath of reportPaths) {
+        core.info(`Uploading coverage report ${reportPath} to ${uploadEndpoint}`);
+        const reportContent = await (0, promises_1.readFile)(reportPath);
+        const formData = new FormData();
+        formData.set('repoSlug', metadata.repoSlug);
+        formData.set('branch', metadata.branch);
+        formData.set('commitSha', metadata.commitSha);
+        formData.set('commitTimestamp', metadata.commitTimestamp);
+        formData.set('commitUser', metadata.commitUser);
+        formData.set('commitMessage', metadata.commitMessage);
+        formData.set('file', new File([reportContent], (0, node_path_1.basename)(reportPath), { type: 'application/xml' }));
+        const response = await fetch(uploadEndpoint, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${uploadToken}`
+            },
+            body: formData
+        });
+        if (!response.ok) {
+            throw Error(`Upload failed for ${reportPath}: ${response.status} ${response.statusText}`);
+        }
+    }
+};
+exports.uploadReports = uploadReports;
+const getUploadMetadata = (context) => ({
+    repoSlug: `${context.repo.owner}/${context.repo.repo}`,
+    branch: context.payload.pull_request?.head?.ref ?? context.ref_name ?? '',
+    commitSha: context.sha,
+    commitTimestamp: (0, exports.getGitOutput)('%cI'),
+    commitUser: context.actor,
+    commitMessage: (0, exports.getGitOutput)('%s')
+});
+exports.getUploadMetadata = getUploadMetadata;
+const getGitOutput = (format) => (0, node_child_process_1.execFileSync)('git', ['show', '-s', `--format=${format}`, 'HEAD'], {
+    encoding: 'utf8'
+}).trim();
+exports.getGitOutput = getGitOutput;
 const getDetails = (event, payload) => {
     switch (event) {
         case 'pull_request':
@@ -38510,6 +38564,14 @@ module.exports = require("node:buffer");
 
 /***/ }),
 
+/***/ 1421:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:child_process");
+
+/***/ }),
+
 /***/ 7540:
 /***/ ((module) => {
 
@@ -38550,6 +38612,14 @@ module.exports = require("node:events");
 
 /***/ }),
 
+/***/ 1455:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:fs/promises");
+
+/***/ }),
+
 /***/ 7067:
 /***/ ((module) => {
 
@@ -38571,6 +38641,14 @@ module.exports = require("node:http2");
 
 "use strict";
 module.exports = require("node:net");
+
+/***/ }),
+
+/***/ 6760:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:path");
 
 /***/ }),
 

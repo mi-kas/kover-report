@@ -25,6 +25,12 @@ inputs:
   coverage-counter-type:
     required: false
     description: 'Report counter type (`INSTRUCTION``, `LINE` or `BRANCH`) to calculate coverage metrics.'
+  upload_url:
+    required: false
+    description: 'Base URL of the upload service that receives coverage XML reports'
+  upload_token:
+    required: false
+    description: 'Bearer token used to authenticate coverage XML report uploads'
 
 outputs:
   coverage-overall:
