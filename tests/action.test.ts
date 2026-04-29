@@ -360,6 +360,18 @@ describe('Action functions', () => {
         }
       })
     )
+    const getCommitMock = vi.fn(() =>
+      Promise.resolve({
+        data: {
+          commit: {
+            author: {
+              date: '2026-04-29T10:11:12Z'
+            },
+            message: 'PR head subject\n\nLonger body'
+          }
+        }
+      })
+    )
     const createIssueCommentMock = vi.fn(() => Promise.resolve({}))
     const setOutputMock = vi.fn()
     const infoMock = vi.fn()
@@ -394,7 +406,8 @@ describe('Action functions', () => {
       getOctokit: vi.fn(() => ({
         rest: {
           repos: {
-            compareCommits: compareCommitsMock
+            compareCommits: compareCommitsMock,
+            getCommit: getCommitMock
           },
           issues: {
             createComment: createIssueCommentMock
@@ -405,12 +418,21 @@ describe('Action functions', () => {
         eventName: 'pull_request',
         actor: 'octocat',
         ref_name: '12/merge',
-        sha: 'abc123',
+        sha: 'merge_sha',
         payload: {
           pull_request: {
             number: 12,
             base: {sha: 'base_sha'},
-            head: {sha: 'head_sha', ref: 'feature/upload'}
+            head: {
+              sha: 'head_sha',
+              ref: 'feature/upload',
+              repo: {
+                owner: {
+                  login: 'contributor'
+                },
+                name: 'forked-repo'
+              }
+            }
           }
         },
         repo: {
@@ -422,6 +444,11 @@ describe('Action functions', () => {
 
     await run(core, github)
 
+    expect(getCommitMock).toHaveBeenCalledWith({
+      owner: 'contributor',
+      repo: 'forked-repo',
+      ref: 'head_sha'
+    })
     expect(fetchMock).toHaveBeenCalledTimes(1)
     const [url, request] = fetchMock.mock.calls[0]
     expect(url).toBeInstanceOf(URL)
@@ -436,12 +463,10 @@ describe('Action functions', () => {
     const formData = request.body as FormData
     expect(formData.get('repoSlug')).toBe('mi-kas/kover-report')
     expect(formData.get('branch')).toBe('feature/upload')
-    expect(formData.get('commitSha')).toBe('abc123')
-    expect(formData.get('commitTimestamp')).toEqual(expect.any(String))
-    expect(formData.get('commitTimestamp')).not.toBe('')
+    expect(formData.get('commitSha')).toBe('head_sha')
+    expect(formData.get('commitTimestamp')).toBe('2026-04-29T10:11:12Z')
     expect(formData.get('commitUser')).toBe('octocat')
-    expect(formData.get('commitMessage')).toEqual(expect.any(String))
-    expect(formData.get('commitMessage')).not.toBe('')
+    expect(formData.get('commitMessage')).toBe('PR head subject')
     const uploadedFile = formData.get('file')
     expect(uploadedFile).toBeInstanceOf(File)
     expect((uploadedFile as File).name).toBe('report.xml')
@@ -454,62 +479,145 @@ describe('Action functions', () => {
         'https://coverage.example.com',
         undefined,
         {info: vi.fn()} as any,
-        {context: {actor: 'octocat'}} as any
+        {context: {actor: 'octocat'}} as any,
+        {} as any
       )
     ).rejects.toThrowError(
       Error('Both upload_url and upload_token must be set together')
     )
   })
 
-  test('get upload metadata uses github actor as commit user', () => {
-    const metadata = getUploadMetadata({
-      actor: 'octocat',
-      ref_name: 'main',
-      sha: 'abc123',
-      payload: {},
-      repo: {
-        owner: 'mi-kas',
-        repo: 'kover-report'
-      }
-    } as any)
+  test('get upload metadata uses github actor as commit user', async () => {
+    const metadata = await getUploadMetadata(
+      {
+        actor: 'octocat',
+        ref_name: 'main',
+        sha: 'abc123',
+        payload: {},
+        repo: {
+          owner: 'mi-kas',
+          repo: 'kover-report'
+        }
+      } as any,
+      {} as any
+    )
 
     expect(metadata.commitUser).toBe('octocat')
   })
 
-  test('get upload metadata derives repo, branch and sha from pull request context', () => {
-    const metadata = getUploadMetadata({
-      actor: 'octocat',
-      ref_name: '12/merge',
-      sha: 'abc123',
-      payload: {
-        pull_request: {
-          head: {
-            ref: 'feature/upload'
+  test('get upload metadata derives repo, branch and sha from pull request context', async () => {
+    const getCommitMock = vi.fn(() =>
+      Promise.resolve({
+        data: {
+          commit: {
+            author: {
+              date: '2026-04-29T12:00:00Z'
+            },
+            message: 'PR head subject\n\nBody'
           }
         }
-      },
-      repo: {
-        owner: 'mi-kas',
-        repo: 'kover-report'
-      }
-    } as any)
+      })
+    )
+    const metadata = await getUploadMetadata(
+      {
+        actor: 'octocat',
+        ref_name: '12/merge',
+        sha: 'merge_sha',
+        payload: {
+          pull_request: {
+            head: {
+              sha: 'head_sha',
+              ref: 'feature/upload',
+              repo: {
+                owner: {
+                  login: 'contributor'
+                },
+                name: 'forked-repo'
+              }
+            }
+          }
+        },
+        repo: {
+          owner: 'mi-kas',
+          repo: 'kover-report'
+        }
+      } as any,
+      {
+        rest: {
+          repos: {
+            getCommit: getCommitMock
+          }
+        }
+      } as any
+    )
 
     expect(metadata.repoSlug).toBe('mi-kas/kover-report')
     expect(metadata.branch).toBe('feature/upload')
-    expect(metadata.commitSha).toBe('abc123')
+    expect(metadata.commitSha).toBe('head_sha')
+    expect(metadata.commitTimestamp).toBe('2026-04-29T12:00:00Z')
+    expect(metadata.commitMessage).toBe('PR head subject')
+    expect(getCommitMock).toHaveBeenCalledWith({
+      owner: 'contributor',
+      repo: 'forked-repo',
+      ref: 'head_sha'
+    })
   })
 
-  test('get upload metadata derives branch from push ref when no pull request exists', () => {
-    const metadata = getUploadMetadata({
-      actor: 'octocat',
-      ref_name: 'main',
-      sha: 'def456',
-      payload: {},
-      repo: {
-        owner: 'mi-kas',
-        repo: 'kover-report'
-      }
-    } as any)
+  test('get upload metadata falls back to local git data when PR commit lookup fails', async () => {
+    const metadata = await getUploadMetadata(
+      {
+        actor: 'octocat',
+        ref_name: '12/merge',
+        sha: 'merge_sha',
+        payload: {
+          pull_request: {
+            head: {
+              sha: 'head_sha',
+              ref: 'feature/upload',
+              repo: {
+                owner: {
+                  login: 'contributor'
+                },
+                name: 'forked-repo'
+              }
+            }
+          }
+        },
+        repo: {
+          owner: 'mi-kas',
+          repo: 'kover-report'
+        }
+      } as any,
+      {
+        rest: {
+          repos: {
+            getCommit: vi.fn(() => Promise.reject(new Error('boom')))
+          }
+        }
+      } as any
+    )
+
+    expect(metadata.commitSha).toBe('head_sha')
+    expect(metadata.commitTimestamp).toEqual(expect.any(String))
+    expect(metadata.commitTimestamp).not.toBe('')
+    expect(metadata.commitMessage).toEqual(expect.any(String))
+    expect(metadata.commitMessage).not.toBe('')
+  })
+
+  test('get upload metadata derives branch from push ref when no pull request exists', async () => {
+    const metadata = await getUploadMetadata(
+      {
+        actor: 'octocat',
+        ref_name: 'main',
+        sha: 'def456',
+        payload: {},
+        repo: {
+          owner: 'mi-kas',
+          repo: 'kover-report'
+        }
+      } as any,
+      {} as any
+    )
 
     expect(metadata.repoSlug).toBe('mi-kas/kover-report')
     expect(metadata.branch).toBe('main')

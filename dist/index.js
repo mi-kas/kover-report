@@ -46,7 +46,7 @@ const run = async (core, github) => {
         throw Error('At least one path must be provided');
     }
     const reportPaths = (0, reader_1.resolveReportPaths)(paths);
-    await (0, exports.uploadReports)(reportPaths, uploadUrl, uploadToken, core, github);
+    await (0, exports.uploadReports)(reportPaths, uploadUrl, uploadToken, core, github, octokit);
     const details = (0, exports.getDetails)(event, github.context.payload);
     const changedFiles = await (0, exports.getChangedFiles)(details.base, details.head, octokit, github.context.repo);
     const overallCoverage = {
@@ -87,7 +87,7 @@ const run = async (core, github) => {
     }
 };
 exports.run = run;
-const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github) => {
+const uploadReports = async (reportPaths, uploadUrl, uploadToken, _core, github, client) => {
     if (uploadUrl == null && uploadToken == null) {
         return;
     }
@@ -95,9 +95,8 @@ const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github) 
         throw Error('Both upload_url and upload_token must be set together');
     }
     const uploadEndpoint = new URL(uploadUrl);
-    const metadata = (0, exports.getUploadMetadata)(github.context);
+    const metadata = await (0, exports.getUploadMetadata)(github.context, client);
     for (const reportPath of reportPaths) {
-        core.info(`Uploading coverage report ${reportPath} to ${uploadEndpoint}`);
         const reportContent = await (0, promises_1.readFile)(reportPath);
         const formData = new FormData();
         formData.set('repoSlug', metadata.repoSlug);
@@ -120,14 +119,48 @@ const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github) 
     }
 };
 exports.uploadReports = uploadReports;
-const getUploadMetadata = (context) => ({
-    repoSlug: `${context.repo.owner}/${context.repo.repo}`,
-    branch: context.payload.pull_request?.head?.ref ?? context.ref_name ?? '',
-    commitSha: context.sha,
-    commitTimestamp: (0, exports.getGitOutput)('%cI'),
-    commitUser: context.actor,
-    commitMessage: (0, exports.getGitOutput)('%s')
-});
+const getUploadMetadata = (context, client) => {
+    const pullRequest = context.payload.pull_request;
+    const defaultMetadata = {
+        repoSlug: `${context.repo.owner}/${context.repo.repo}`,
+        branch: pullRequest?.head?.ref ?? context.ref_name ?? '',
+        commitSha: context.sha,
+        commitTimestamp: (0, exports.getGitOutput)('%cI'),
+        commitUser: context.actor,
+        commitMessage: (0, exports.getGitOutput)('%s')
+    };
+    if (pullRequest == null) {
+        return Promise.resolve(defaultMetadata);
+    }
+    const headOwner = pullRequest.head.repo?.owner?.login;
+    const headRepo = pullRequest.head.repo?.name;
+    const headSha = pullRequest.head.sha;
+    if (headOwner == null || headRepo == null || headSha == null) {
+        return Promise.resolve({
+            ...defaultMetadata,
+            commitSha: headSha ?? defaultMetadata.commitSha
+        });
+    }
+    return client.rest.repos
+        .getCommit({
+        owner: headOwner,
+        repo: headRepo,
+        ref: headSha
+    })
+        .then(response => ({
+        ...defaultMetadata,
+        commitSha: headSha,
+        commitTimestamp: response.data.commit.author?.date ??
+            response.data.commit.committer?.date ??
+            defaultMetadata.commitTimestamp,
+        commitMessage: response.data.commit.message.split('\n')[0] ||
+            defaultMetadata.commitMessage
+    }))
+        .catch(() => ({
+        ...defaultMetadata,
+        commitSha: headSha
+    }));
+};
 exports.getUploadMetadata = getUploadMetadata;
 const getGitOutput = (format) => (0, node_child_process_1.execFileSync)('git', ['show', '-s', `--format=${format}`, 'HEAD'], {
     encoding: 'utf8'

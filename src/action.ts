@@ -67,7 +67,14 @@ export const run = async (
 
   const reportPaths = resolveReportPaths(paths)
 
-  await uploadReports(reportPaths, uploadUrl, uploadToken, core, github)
+  await uploadReports(
+    reportPaths,
+    uploadUrl,
+    uploadToken,
+    core,
+    github,
+    octokit
+  )
 
   const details = getDetails(event, github.context.payload)
 
@@ -149,8 +156,9 @@ export const uploadReports = async (
   reportPaths: string[],
   uploadUrl: string | undefined,
   uploadToken: string | undefined,
-  core: typeof actionsCore,
-  github: typeof actionsGithub
+  _core: typeof actionsCore,
+  github: typeof actionsGithub,
+  client: ReturnType<typeof actionsGithub.getOctokit>
 ): Promise<void> => {
   if (uploadUrl == null && uploadToken == null) {
     return
@@ -161,11 +169,9 @@ export const uploadReports = async (
   }
 
   const uploadEndpoint = new URL(uploadUrl)
-  const metadata = getUploadMetadata(github.context)
+  const metadata = await getUploadMetadata(github.context, client)
 
   for (const reportPath of reportPaths) {
-    core.info(`Uploading coverage report ${reportPath} to ${uploadEndpoint}`)
-
     const reportContent = await readFile(reportPath)
     const formData = new FormData()
     formData.set('repoSlug', metadata.repoSlug)
@@ -196,22 +202,63 @@ export const uploadReports = async (
 }
 
 export const getUploadMetadata = (
-  context: typeof actionsGithub.context & {ref_name?: string}
-): {
+  context: typeof actionsGithub.context & {ref_name?: string},
+  client: ReturnType<typeof actionsGithub.getOctokit>
+): Promise<{
   repoSlug: string
   branch: string
   commitSha: string
   commitTimestamp: string
   commitUser: string
   commitMessage: string
-} => ({
-  repoSlug: `${context.repo.owner}/${context.repo.repo}`,
-  branch: context.payload.pull_request?.head?.ref ?? context.ref_name ?? '',
-  commitSha: context.sha,
-  commitTimestamp: getGitOutput('%cI'),
-  commitUser: context.actor,
-  commitMessage: getGitOutput('%s')
-})
+}> => {
+  const pullRequest = context.payload.pull_request
+  const defaultMetadata = {
+    repoSlug: `${context.repo.owner}/${context.repo.repo}`,
+    branch: pullRequest?.head?.ref ?? context.ref_name ?? '',
+    commitSha: context.sha,
+    commitTimestamp: getGitOutput('%cI'),
+    commitUser: context.actor,
+    commitMessage: getGitOutput('%s')
+  }
+
+  if (pullRequest == null) {
+    return Promise.resolve(defaultMetadata)
+  }
+
+  const headOwner = pullRequest.head.repo?.owner?.login
+  const headRepo = pullRequest.head.repo?.name
+  const headSha = pullRequest.head.sha
+
+  if (headOwner == null || headRepo == null || headSha == null) {
+    return Promise.resolve({
+      ...defaultMetadata,
+      commitSha: headSha ?? defaultMetadata.commitSha
+    })
+  }
+
+  return client.rest.repos
+    .getCommit({
+      owner: headOwner,
+      repo: headRepo,
+      ref: headSha
+    })
+    .then(response => ({
+      ...defaultMetadata,
+      commitSha: headSha,
+      commitTimestamp:
+        response.data.commit.author?.date ??
+        response.data.commit.committer?.date ??
+        defaultMetadata.commitTimestamp,
+      commitMessage:
+        response.data.commit.message.split('\n')[0] ||
+        defaultMetadata.commitMessage
+    }))
+    .catch(() => ({
+      ...defaultMetadata,
+      commitSha: headSha
+    }))
+}
 
 export const getGitOutput = (format: string): string =>
   execFileSync('git', ['show', '-s', `--format=${format}`, 'HEAD'], {
