@@ -199,14 +199,17 @@ export const uploadReports = async (
 
     if (!response.ok) {
       throw Error(
-        `Upload failed for ${reportPath}: ${response.status} ${response.statusText} - ${response.body}`
+        `Upload failed for ${reportPath}: ${response.status} ${response.statusText} - ${await response.text()}`
       )
     }
   }
 }
 
 export const getUploadMetadata = (
-  context: typeof actionsGithub.context & {ref_name?: string},
+  context: typeof actionsGithub.context & {
+    ref_name?: string
+    head_ref?: string
+  },
   client: ReturnType<typeof actionsGithub.getOctokit>
 ): Promise<{
   repoSlug: string
@@ -219,7 +222,7 @@ export const getUploadMetadata = (
   const pullRequest = context.payload.pull_request
   const defaultMetadata = {
     repoSlug: `${context.repo.owner}/${context.repo.repo}`,
-    branch: pullRequest?.head?.ref ?? context.ref_name ?? '',
+    branch: context.head_ref || context.ref_name || '',
     commitSha: context.sha,
     commitTimestamp: getGitOutput('%cI'),
     commitUser: context.actor,

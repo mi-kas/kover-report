@@ -417,6 +417,7 @@ describe('Action functions', () => {
       context: {
         eventName: 'pull_request',
         actor: 'octocat',
+        head_ref: 'feature/upload',
         ref_name: '12/merge',
         sha: 'merge_sha',
         payload: {
@@ -491,6 +492,7 @@ describe('Action functions', () => {
     const metadata = await getUploadMetadata(
       {
         actor: 'octocat',
+        head_ref: '',
         ref_name: 'main',
         sha: 'abc123',
         payload: {},
@@ -521,6 +523,7 @@ describe('Action functions', () => {
     const metadata = await getUploadMetadata(
       {
         actor: 'octocat',
+        head_ref: 'feature/upload',
         ref_name: '12/merge',
         sha: 'merge_sha',
         payload: {
@@ -567,6 +570,7 @@ describe('Action functions', () => {
     const metadata = await getUploadMetadata(
       {
         actor: 'octocat',
+        head_ref: 'feature/upload',
         ref_name: '12/merge',
         sha: 'merge_sha',
         payload: {
@@ -604,10 +608,11 @@ describe('Action functions', () => {
     expect(metadata.commitMessage).not.toBe('')
   })
 
-  test('get upload metadata derives branch from push ref when no pull request exists', async () => {
+  test('get upload metadata derives branch from head_ref and ref_name context values', async () => {
     const metadata = await getUploadMetadata(
       {
         actor: 'octocat',
+        head_ref: '',
         ref_name: 'main',
         sha: 'def456',
         payload: {},

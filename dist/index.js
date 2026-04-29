@@ -115,7 +115,7 @@ const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github, 
             body: formData
         });
         if (!response.ok) {
-            throw Error(`Upload failed for ${reportPath}: ${response.status} ${response.statusText} - ${response.body}`);
+            throw Error(`Upload failed for ${reportPath}: ${response.status} ${response.statusText} - ${await response.text()}`);
         }
     }
 };
@@ -124,7 +124,7 @@ const getUploadMetadata = (context, client) => {
     const pullRequest = context.payload.pull_request;
     const defaultMetadata = {
         repoSlug: `${context.repo.owner}/${context.repo.repo}`,
-        branch: pullRequest?.head?.ref ?? context.ref_name ?? '',
+        branch: context.head_ref || context.ref_name || '',
         commitSha: context.sha,
         commitTimestamp: (0, exports.getGitOutput)('%cI'),
         commitUser: context.actor,
