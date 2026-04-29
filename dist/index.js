@@ -95,7 +95,7 @@ const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github, 
         throw Error('Both upload_url and upload_token must be set together');
     }
     const uploadEndpoint = new URL(uploadUrl);
-    const metadata = await (0, exports.getUploadMetadata)(github.context, client, core);
+    const metadata = await (0, exports.getUploadMetadata)(github.context, client);
     for (const reportPath of reportPaths) {
         const reportContent = await (0, promises_1.readFile)(reportPath);
         const formData = new FormData();
@@ -120,8 +120,7 @@ const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github, 
     }
 };
 exports.uploadReports = uploadReports;
-const getUploadMetadata = (context, client, core) => {
-    core.info(`Github context: ${JSON.stringify(context)}`);
+const getUploadMetadata = (context, client) => {
     const pullRequest = context.payload.pull_request;
     const pushBranch = context.ref?.replace(/^refs\/heads\//, '') ?? '';
     const defaultMetadata = {

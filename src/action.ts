@@ -169,7 +169,7 @@ export const uploadReports = async (
   }
 
   const uploadEndpoint = new URL(uploadUrl)
-  const metadata = await getUploadMetadata(github.context, client, core)
+  const metadata = await getUploadMetadata(github.context, client)
 
   for (const reportPath of reportPaths) {
     const reportContent = await readFile(reportPath)
@@ -207,8 +207,7 @@ export const uploadReports = async (
 
 export const getUploadMetadata = (
   context: typeof actionsGithub.context,
-  client: ReturnType<typeof actionsGithub.getOctokit>,
-  core: typeof actionsCore
+  client: ReturnType<typeof actionsGithub.getOctokit>
 ): Promise<{
   repoSlug: string
   branch: string
@@ -217,7 +216,6 @@ export const getUploadMetadata = (
   commitUser: string
   commitMessage: string
 }> => {
-  core.info(`Github context: ${JSON.stringify(context)}`)
   const pullRequest = context.payload.pull_request
   const pushBranch = context.ref?.replace(/^refs\/heads\//, '') ?? ''
   const defaultMetadata = {
