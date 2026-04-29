@@ -489,6 +489,9 @@ describe('Action functions', () => {
   })
 
   test('get upload metadata uses github actor as commit user', async () => {
+    const core = {
+      info: vi.fn()
+    } as any
     const metadata = await getUploadMetadata(
       {
         actor: 'octocat',
@@ -501,13 +504,17 @@ describe('Action functions', () => {
           repo: 'kover-report'
         }
       } as any,
-      {} as any
+      {} as any,
+      core
     )
 
     expect(metadata.commitUser).toBe('octocat')
   })
 
   test('get upload metadata derives repo, branch and sha from pull request context', async () => {
+    const core = {
+      info: vi.fn()
+    } as any
     const getCommitMock = vi.fn(() =>
       Promise.resolve({
         data: {
@@ -551,7 +558,8 @@ describe('Action functions', () => {
             getCommit: getCommitMock
           }
         }
-      } as any
+      } as any,
+      core
     )
 
     expect(metadata.repoSlug).toBe('mi-kas/kover-report')
@@ -567,6 +575,9 @@ describe('Action functions', () => {
   })
 
   test('get upload metadata falls back to local git data when PR commit lookup fails', async () => {
+    const core = {
+      info: vi.fn()
+    } as any
     const metadata = await getUploadMetadata(
       {
         actor: 'octocat',
@@ -598,7 +609,8 @@ describe('Action functions', () => {
             getCommit: vi.fn(() => Promise.reject(new Error('boom')))
           }
         }
-      } as any
+      } as any,
+      core
     )
 
     expect(metadata.commitSha).toBe('head_sha')
@@ -609,10 +621,13 @@ describe('Action functions', () => {
   })
 
   test('get upload metadata derives branch from head_ref and ref_name context values', async () => {
+    const core = {
+      info: vi.fn()
+    } as any
     const metadata = await getUploadMetadata(
       {
         actor: 'octocat',
-        head_ref: '',
+        head_ref: null,
         ref_name: 'main',
         sha: 'def456',
         payload: {},
@@ -621,7 +636,8 @@ describe('Action functions', () => {
           repo: 'kover-report'
         }
       } as any,
-      {} as any
+      {} as any,
+      core
     )
 
     expect(metadata.repoSlug).toBe('mi-kas/kover-report')
