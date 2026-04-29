@@ -123,9 +123,10 @@ exports.uploadReports = uploadReports;
 const getUploadMetadata = (context, client, core) => {
     core.info(`Github context: ${JSON.stringify(context)}`);
     const pullRequest = context.payload.pull_request;
+    const pushBranch = context.ref?.replace(/^refs\/heads\//, '') ?? '';
     const defaultMetadata = {
         repoSlug: `${context.repo.owner}/${context.repo.repo}`,
-        branch: context.head_ref ?? context.ref_name ?? '',
+        branch: context.payload.pull_request?.head?.ref ?? pushBranch,
         commitSha: context.sha,
         commitTimestamp: (0, exports.getGitOutput)('%cI'),
         commitUser: context.actor,

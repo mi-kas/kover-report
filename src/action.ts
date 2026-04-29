@@ -206,10 +206,7 @@ export const uploadReports = async (
 }
 
 export const getUploadMetadata = (
-  context: typeof actionsGithub.context & {
-    ref_name?: string
-    head_ref?: string
-  },
+  context: typeof actionsGithub.context,
   client: ReturnType<typeof actionsGithub.getOctokit>,
   core: typeof actionsCore
 ): Promise<{
@@ -222,9 +219,10 @@ export const getUploadMetadata = (
 }> => {
   core.info(`Github context: ${JSON.stringify(context)}`)
   const pullRequest = context.payload.pull_request
+  const pushBranch = context.ref?.replace(/^refs\/heads\//, '') ?? ''
   const defaultMetadata = {
     repoSlug: `${context.repo.owner}/${context.repo.repo}`,
-    branch: context.head_ref ?? context.ref_name ?? '',
+    branch: context.payload.pull_request?.head?.ref ?? pushBranch,
     commitSha: context.sha,
     commitTimestamp: getGitOutput('%cI'),
     commitUser: context.actor,
