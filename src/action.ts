@@ -156,7 +156,7 @@ export const uploadReports = async (
   reportPaths: string[],
   uploadUrl: string | undefined,
   uploadToken: string | undefined,
-  _core: typeof actionsCore,
+  core: typeof actionsCore,
   github: typeof actionsGithub,
   client: ReturnType<typeof actionsGithub.getOctokit>
 ): Promise<void> => {
@@ -185,6 +185,10 @@ export const uploadReports = async (
       new File([reportContent], basename(reportPath), {type: 'application/xml'})
     )
 
+    core.info(
+      `Uploading report ${reportPath} to ${uploadUrl} with metadata: ${JSON.stringify(metadata)}`
+    )
+
     const response = await fetch(uploadEndpoint, {
       method: 'POST',
       headers: {
@@ -195,7 +199,7 @@ export const uploadReports = async (
 
     if (!response.ok) {
       throw Error(
-        `Upload failed for ${reportPath}: ${response.status} ${response.statusText}`
+        `Upload failed for ${reportPath}: ${response.status} ${response.statusText} - ${response.body}`
       )
     }
   }

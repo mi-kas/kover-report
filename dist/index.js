@@ -87,7 +87,7 @@ const run = async (core, github) => {
     }
 };
 exports.run = run;
-const uploadReports = async (reportPaths, uploadUrl, uploadToken, _core, github, client) => {
+const uploadReports = async (reportPaths, uploadUrl, uploadToken, core, github, client) => {
     if (uploadUrl == null && uploadToken == null) {
         return;
     }
@@ -106,6 +106,7 @@ const uploadReports = async (reportPaths, uploadUrl, uploadToken, _core, github,
         formData.set('commitUser', metadata.commitUser);
         formData.set('commitMessage', metadata.commitMessage);
         formData.set('file', new File([reportContent], (0, node_path_1.basename)(reportPath), { type: 'application/xml' }));
+        core.info(`Uploading report ${reportPath} to ${uploadUrl} with metadata: ${JSON.stringify(metadata)}`);
         const response = await fetch(uploadEndpoint, {
             method: 'POST',
             headers: {
@@ -114,7 +115,7 @@ const uploadReports = async (reportPaths, uploadUrl, uploadToken, _core, github,
             body: formData
         });
         if (!response.ok) {
-            throw Error(`Upload failed for ${reportPath}: ${response.status} ${response.statusText}`);
+            throw Error(`Upload failed for ${reportPath}: ${response.status} ${response.statusText} - ${response.body}`);
         }
     }
 };
