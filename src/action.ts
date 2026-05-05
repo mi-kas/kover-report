@@ -248,17 +248,19 @@ export const getUploadMetadata = (
       repo: headRepo,
       ref: headSha
     })
-    .then(response => ({
-      ...defaultMetadata,
-      commitSha: headSha,
-      commitTimestamp:
-        response.data.commit.author?.date ??
-        response.data.commit.committer?.date ??
-        defaultMetadata.commitTimestamp,
-      commitMessage:
-        response.data.commit.message.split('\n')[0] ||
-        defaultMetadata.commitMessage
-    }))
+    .then(
+      (response: Awaited<ReturnType<typeof client.rest.repos.getCommit>>) => ({
+        ...defaultMetadata,
+        commitSha: headSha,
+        commitTimestamp:
+          response.data.commit.author?.date ??
+          response.data.commit.committer?.date ??
+          defaultMetadata.commitTimestamp,
+        commitMessage:
+          response.data.commit.message.split('\n')[0] ||
+          defaultMetadata.commitMessage
+      })
+    )
     .catch(() => ({
       ...defaultMetadata,
       commitSha: headSha
@@ -311,7 +313,8 @@ export const addComment = async (
       ...repo
     })
     const comment = comments.data.find(
-      c => c.body?.startsWith(`### ${title}`) ?? false
+      (c: (typeof comments.data)[number]) =>
+        c.body?.startsWith(`### ${title}`) ?? false
     )
 
     if (comment) {
@@ -346,7 +349,7 @@ export const getChangedFiles = async (
   })
 
   return (
-    response.data.files?.map(file => ({
+    response.data.files?.map((file: (typeof response.data.files)[number]) => ({
       filePath: file.filename,
       url: file.blob_url
     })) ?? []

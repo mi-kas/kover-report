@@ -9,7 +9,7 @@
     "format": "biome check --write .",
     "format-check": "biome check .",
     "lint": "biome lint .",
-    "package": "ncc build --source-map --license licenses.txt",
+    "package": "ncc build lib/index.js --source-map --license licenses.txt",
     "test": "vitest run",
     "all": "yarn run format && yarn run lint && yarn test && yarn build && yarn run package",
     "dev": "tsx watch src/dev.ts",
@@ -32,8 +32,8 @@
     "node": ">=24.0.0"
   },
   "dependencies": {
-    "@actions/core": "^2.0.3",
-    "@actions/github": "^8.0.1",
+    "@actions/core": "^3.0.1",
+    "@actions/github": "^9.1.1",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
