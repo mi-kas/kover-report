@@ -40,7 +40,7 @@
     "@biomejs/biome": "^2.5.2",
     "@types/node": "^26.4.0",
     "@types/xml2js": "^0.4.14",
-    "@vercel/ncc": "^0.44.1",
+    "@vercel/ncc": "^0.45.0",
     "husky": "^9.1.7",
     "js-yaml": "^5.4.1",
     "tsx": "^4.23.12",
