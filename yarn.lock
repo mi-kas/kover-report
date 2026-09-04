@@ -582,10 +582,10 @@
   resolved "https://registry.yarnpkg.com/@typescript/typescript-win32-x64/-/typescript-win32-x64-7.0.2.tgz#cf3b7b0d6ce5635daca4c8e01c189cdcde47ec3c"
   integrity sha512-0BQ3HkAHHlKLSp1qRvf3SUhGpGsDuhB/jgFw75guyqbxJqEaS0Cw/VFO8i2nHglJUzQCRtMMR/IBAKE3ETMC4g==
 
-"@vercel/ncc@^0.44.1":
-  version "0.44.1"
-  resolved "https://registry.yarnpkg.com/@vercel/ncc/-/ncc-0.44.1.tgz#5becc6500a1494e5b9786150da6374d0b2d7671d"
-  integrity sha512-cUjIE5P2YY1n+Kt9rFIazMMpGoPn1Fic04rOmTkElMkiDP5oszGfERMpo2shVkFKDL7rVppdM2pqJKC59shQWQ==
+"@vercel/ncc@^0.45.0":
+  version "0.45.0"
+  resolved "https://registry.yarnpkg.com/@vercel/ncc/-/ncc-0.45.0.tgz#e1e2424d9eb0dbb3a8fa7067e36e0da96d42a316"
+  integrity sha512-8zPi1yO2mHpoKTD+e+Bf0ZT3e+sWHSOyGapm9s7b5R0gxJi3CiFTqmeQiMEyu6ejrz2s09M8JkEoUaTWjBJPQQ==
 
 "@vitest/expect@4.1.11":
   version "4.1.11"
