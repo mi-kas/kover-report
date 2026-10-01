@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",
-    "@types/node": "^26.4.0",
+    "@types/node": "^26.6.3",
     "@types/xml2js": "^0.4.14",
     "@vercel/ncc": "^0.45.0",
     "husky": "^9.1.7",
